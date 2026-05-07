@@ -14,7 +14,7 @@ const minutesToTime = (minutes) => {
   return `${h}:${m}`;
 };
 
-async function checkAvailability(stationId, date, connectorType, startTime, endTime, maxPorts) {
+async function checkPortAvailability(stationId, date, connectorType, startTime, endTime, maxPorts) {
   const bookingDate = new Date(date);
   bookingDate.setHours(0, 0, 0, 0);
 
@@ -82,7 +82,7 @@ async function findNextAvailableSlot(stationId, date, connectorType, startTime, 
     const nextStart = minutesToTime(currentStartMin);
     const nextEnd = minutesToTime(currentStartMin + durationMinutes);
     
-    const result = await checkAvailability(stationId, date, connectorType, nextStart, nextEnd, maxPorts);
+    const result = await checkPortAvailability(stationId, date, connectorType, nextStart, nextEnd, maxPorts);
     if (result.available) {
       return nextStart;
     }
