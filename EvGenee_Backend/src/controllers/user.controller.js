@@ -141,7 +141,7 @@ const updateProfile = async (req, res, next) => {
     if (vehicle) updateData.vehicle = vehicle;
 
     const user = await User.findByIdAndUpdate(req.user.id, updateData, {
-      new: true,
+      returnDocument: 'after',
       runValidators: true,
     });
 
