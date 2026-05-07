@@ -38,7 +38,7 @@ router.post("/update-payment", async (req, res) => {
     const payment = await Payment.findOneAndUpdate(
       { orderId },
       { paymentId, status },
-      { new: true }
+      { returnDocument: "after" }
     );
 
     if (!payment) {

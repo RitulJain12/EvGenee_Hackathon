@@ -146,7 +146,7 @@ const updateStation = async (req, res, next) => {
     const updatedStation = await Station.findByIdAndUpdate(
       req.params.stationId,
       req.body,
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     
@@ -330,7 +330,7 @@ const updateStationStatus = async (req, res, next) => {
     const station = await Station.findByIdAndUpdate(
       stationId,
       { status },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!station) {
