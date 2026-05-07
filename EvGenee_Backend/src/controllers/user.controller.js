@@ -25,9 +25,11 @@ const registerUser = async (req, res, next) => {
       role: role || 'user',
     };
 
-    
     if (vehicle) {
       userData.vehicle = vehicle;
+    }
+    if (vehicleNumbers) {
+      userData.vehicleNumbers = vehicleNumbers;
     }
 
     const user = await User.create(userData);
@@ -54,6 +56,7 @@ const registerUser = async (req, res, next) => {
         email: user.email,
         role: user.role,
         vehicle: user.vehicle,
+        vehicleNumbers: user.vehicleNumbers ?? [],
         createdAt: user.createdAt,
       },
       token,
@@ -105,6 +108,7 @@ const loginUser = async (req, res, next) => {
         email: user.email,
         role: user.role,
         vehicle: user.vehicle,
+        vehicleNumbers: user.vehicleNumbers ?? [],
         createdAt: user.createdAt,
       },
       token,
@@ -141,7 +145,7 @@ const updateProfile = async (req, res, next) => {
     if (vehicle) updateData.vehicle = vehicle;
 
     const user = await User.findByIdAndUpdate(req.user.id, updateData, {
-      returnDocument: 'after',
+      new: true,
       runValidators: true,
     });
 
@@ -152,10 +156,21 @@ const updateProfile = async (req, res, next) => {
       });
     }
 
+    if (name) user.name = name;
+    if (vehicle) user.vehicle = vehicle;
+    
+    // Explicitly update vehicleNumbers if provided
+    if (Array.isArray(vehicleNumbers)) {
+      user.vehicleNumbers = vehicleNumbers;
+      user.markModified('vehicleNumbers');
+    }
+
+    const updatedUser = await user.save();
+
     res.json({
       success: true,
       message: 'Profile updated successfully',
-      data: user,
+      data: updatedUser,
     });
   } catch (error) {
     next(error);
