@@ -25,8 +25,8 @@ export function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-[1000] bg-[#000814]/95 backdrop-blur-xl border-t border-white/8"
-      style={{ paddingBottom: "var(--safe-bottom)" }}
+      className="fixed bottom-0 inset-x-0 z-[1000] bg-white border-t border-[#D1D1D1] shadow-lg"
+      style={{ paddingBottom: "var(--safe-bottom)", fontFamily: "'Inter', sans-serif" }}
     >
       <div
         className={cn("max-w-2xl mx-auto grid px-2")}
@@ -40,19 +40,19 @@ export function BottomNav() {
               key={to}
               to={to}
               className={cn(
-                "flex flex-col items-center justify-center gap-1 py-2.5 text-xs font-medium transition-colors",
-                active ? "text-primary" : "text-white/35",
+                "flex flex-col items-center justify-center gap-1 py-2.5 text-xs font-semibold transition-colors",
+                active ? "text-[#C64F38]" : "text-[#4A6163] hover:text-[#242426]",
               )}
             >
               <div
                 className={cn(
-                  "h-9 w-9 rounded-full flex items-center justify-center transition-all",
-                  active && "bg-primary/15 ring-1 ring-primary/30",
+                  "h-9 w-9 rounded-[4px] flex items-center justify-center transition-all",
+                  active && "bg-[#FBE8E4] border border-[#FBDED9]",
                 )}
               >
                 <Icon className="h-5 w-5" />
               </div>
-              <span className="text-[10px]">{label}</span>
+              <span className="text-[10px] font-space uppercase tracking-wider">{label}</span>
             </Link>
           );
         })}

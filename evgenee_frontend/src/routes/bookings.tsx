@@ -34,21 +34,21 @@ export const Route = createFileRoute("/bookings")({
 });
 
 const statusColor: Record<string, string> = {
-  confirmed: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20",
-  "in-progress": "bg-blue-500/15 text-blue-400 border border-blue-500/20",
-  completed: "bg-white/8 text-white/40 border border-white/10",
-  cancelled: "bg-red-500/15 text-red-400 border border-red-500/20",
-  pending: "bg-amber-500/15 text-amber-400 border border-amber-500/20",
-  "no-show": "bg-red-500/15 text-red-400 border border-red-500/20",
+  confirmed: "bg-[#E2F3EC] text-[#0F9F59] border border-[#CDECE0]",
+  "in-progress": "bg-[#E3EDFD] text-[#1A73E8] border border-[#CFDFFC]",
+  completed: "bg-[#FAF9F6] text-[#4A6163] border border-[#EAEAEA]",
+  cancelled: "bg-[#FBE8E4] text-[#C64F38] border border-[#FBDED9]",
+  pending: "bg-[#FDF3E3] text-[#F39C12] border border-[#FCE6CF]",
+  "no-show": "bg-[#FBE8E4] text-[#C64F38] border border-[#FBDED9]",
 };
 
 const iconColor: Record<string, string> = {
-  confirmed: "from-emerald-600 to-emerald-400",
-  "in-progress": "from-blue-600 to-blue-400",
-  completed: "from-slate-600 to-slate-400",
-  cancelled: "from-red-600 to-red-400",
-  pending: "from-amber-600 to-amber-400",
-  "no-show": "from-red-600 to-red-400",
+  confirmed: "bg-[#E2F3EC] text-[#0F9F59]",
+  "in-progress": "bg-[#E3EDFD] text-[#1A73E8]",
+  completed: "bg-[#EAEAEA] text-[#4A6163]",
+  cancelled: "bg-[#FBE8E4] text-[#C64F38]",
+  pending: "bg-[#FDF3E3] text-[#F39C12]",
+  "no-show": "bg-[#FBE8E4] text-[#C64F38]",
 };
 
 function PendingCountdown({ createdAt }: { createdAt: string }) {
@@ -73,9 +73,9 @@ function PendingCountdown({ createdAt }: { createdAt: string }) {
   const m = Math.floor(timeLeft / 60).toString().padStart(2, "0");
   const s = (timeLeft % 60).toString().padStart(2, "0");
 
-  if (timeLeft === 0) return <span className="text-red-400 font-bold text-[10px]">Expired</span>;
+  if (timeLeft === 0) return <span className="text-[#C64F38] font-bold text-[10px] font-space uppercase">Expired</span>;
   return (
-    <span className="text-amber-400 font-bold text-[10px] animate-pulse flex items-center gap-1">
+    <span className="text-[#F39C12] font-bold text-[10px] animate-pulse flex items-center gap-1 font-space uppercase">
       <Clock className="h-2.5 w-2.5" /> {m}:{s} left
     </span>
   );
@@ -135,8 +135,8 @@ function BookingsPage() {
 
   if (authLoading)
     return (
-      <div className="h-screen grid place-items-center bg-[#000814]">
-        <div className="h-8 w-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+      <div className="h-screen grid place-items-center bg-[#FAF9F6]">
+        <div className="h-8 w-8 border-2 border-[#242426] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   if (!isAuthed) return <Navigate to="/auth/login" />;
@@ -263,58 +263,24 @@ function BookingsPage() {
 
   return (
     <div
-      className="min-h-screen bg-[#000814] text-white overflow-x-hidden"
-      style={{ paddingBottom: "6rem", fontFamily: "'DM Sans', sans-serif" }}
+      className="min-h-screen bg-[#FAF9F6] text-[#242426] overflow-x-hidden"
+      style={{ paddingBottom: "6.5rem", fontFamily: "'Inter', sans-serif" }}
     >
-      {/* Premium Background Image */}
-      <div className="fixed inset-0 z-0">
-        <img
-          src="/hero-bg.png"
-          alt="EV Charging"
-          className="w-full h-full object-cover opacity-20"
-        />
-        <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[1px]" />
-      </div>
-
-      {/* Project Texture */}
-      <div
-        className="fixed inset-0 z-10 pointer-events-none opacity-[0.05]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: "repeat",
-          backgroundSize: "128px 128px",
-        }}
-      />
-
-      {/* Project Glows */}
-      <div
-        className="fixed top-0 left-0 w-[600px] h-[500px] pointer-events-none z-10"
-        style={{
-          background: "radial-gradient(ellipse at 0% 0%, rgba(59,130,246,0.1) 0%, transparent 70%)",
-        }}
-      />
-      <div
-        className="fixed bottom-0 right-0 w-[500px] h-[500px] pointer-events-none z-10"
-        style={{
-          background: "radial-gradient(ellipse at 100% 100%, rgba(16,185,129,0.08) 0%, transparent 70%)",
-        }}
-      />
-
       <div className="relative z-10 max-w-2xl mx-auto px-6 pt-12">
         <header className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-white mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
+          <h1 className="text-3xl font-bold tracking-tight text-[#242426] mb-2 font-space uppercase" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
             My Bookings
           </h1>
-          <p className="text-white/40 text-sm">Manage your charging fleet and sessions</p>
+          <p className="text-[#4A6163] text-sm font-medium">Manage your charging fleet and sessions</p>
         </header>
 
         <Tabs value={tab} onValueChange={setTab} className="mb-8">
-          <TabsList className="bg-white/5 border border-white/8 rounded-2xl p-1.5 w-full flex">
+          <TabsList className="bg-[#FAF9F6] border border-[#D1D1D1] rounded-[4px] p-1 w-full flex">
             {["all", "active", "history"].map((t) => (
               <TabsTrigger
                 key={t}
                 value={t}
-                className="flex-1 rounded-xl text-xs font-bold uppercase tracking-widest data-[state=active]:bg-emerald-500 data-[state=active]:text-black text-white/40 transition-all py-3"
+                className="flex-1 rounded-[4px] text-xs font-bold uppercase tracking-widest data-[state=active]:bg-[#242426] data-[state=active]:text-white text-[#4A6163] hover:text-[#242426] transition-all py-3 font-space"
               >
                 {t}
               </TabsTrigger>
@@ -324,34 +290,34 @@ function BookingsPage() {
           <TabsContent value={tab} className="space-y-4 mt-6">
             {loading ? (
               <div className="py-20 flex justify-center">
-                <div className="h-8 w-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                <div className="h-8 w-8 border-2 border-[#242426] border-t-transparent rounded-full animate-spin" />
               </div>
             ) : filtered.length === 0 ? (
-              <div className="text-center py-20 border-2 border-dashed border-white/5 rounded-[2rem]">
-                <Calendar className="h-10 w-10 text-white/5 mx-auto mb-3" />
-                <p className="text-white/20 text-sm font-bold uppercase tracking-widest">No sessions found</p>
+              <div className="text-center py-20 border border-dashed border-[#D1D1D1] rounded-[4px] bg-white shadow-sm">
+                <Calendar className="h-10 w-10 text-[#4A6163]/30 mx-auto mb-3" />
+                <p className="text-[#4A6163]/60 text-xs font-bold uppercase tracking-widest font-space">No sessions found</p>
               </div>
             ) : (
               filtered.map((b) => {
                 const station = typeof b.station === "object" ? (b.station as Station) : null;
                 const isBusy = busyId === b._id;
-                const grad = iconColor[b.status] ?? "from-emerald-600 to-emerald-400";
+                const bgIcon = iconColor[b.status] ?? "bg-[#EAEAEA] text-[#4A6163]";
                 return (
-                  <div key={b._id} className="bg-white/[0.03] border border-white/5 rounded-3xl p-5 hover:bg-white/[0.05] transition-all group">
+                  <div key={b._id} className="bg-white border border-[#D1D1D1] rounded-[4px] p-5 hover:border-[#4A6163] transition-all group shadow-sm">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-center gap-4">
-                        <div className={`h-14 w-14 rounded-2xl bg-gradient-to-br ${grad} flex items-center justify-center shadow-lg`}>
-                          <FontAwesomeIcon icon={faChargingStation} className="h-6 w-6 text-white" />
+                        <div className={`h-14 w-14 rounded-[4px] ${bgIcon} flex items-center justify-center shadow-sm`}>
+                          <FontAwesomeIcon icon={faChargingStation} className="h-6 w-6" />
                         </div>
                         <div>
-                          <h3 className="font-bold text-white text-base leading-none mb-1.5">{station?.name ?? "Charging Station"}</h3>
-                          <p className="text-xs text-white/30 flex items-center gap-1.5">
-                            <MapPin className="h-3 w-3" /> {station?.address?.city ?? "Location"}
+                          <h3 className="font-bold text-[#242426] text-base leading-none mb-1.5 font-space uppercase">{station?.name ?? "Charging Station"}</h3>
+                          <p className="text-xs text-[#4A6163] flex items-center gap-1.5 font-medium">
+                            <MapPin className="h-3 w-3 text-[#4A6163]" /> {station?.address?.city ?? "Location"}
                           </p>
                         </div>
                       </div>
                       <div className="text-right flex flex-col items-end gap-1.5">
-                        <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full ${statusColor[b.status]}`}>
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-[4px] ${statusColor[b.status]}`}>
                           {b.status}
                         </span>
                         {b.status === "pending" && b.createdAt && <PendingCountdown createdAt={b.createdAt} />}
@@ -359,31 +325,31 @@ function BookingsPage() {
                     </div>
 
                     <div className="mt-6 grid grid-cols-2 gap-3">
-                      <div className="bg-white/5 rounded-2xl p-3 border border-white/5 flex items-center gap-3">
-                        <Calendar className="h-4 w-4 text-emerald-400/60" />
+                      <div className="bg-[#FAF9F6] rounded-[4px] p-3 border border-[#EAEAEA] flex items-center gap-3">
+                        <Calendar className="h-4 w-4 text-[#4A6163]" />
                         <div>
-                          <p className="text-[8px] text-white/30 font-bold uppercase tracking-tighter">Date</p>
-                          <p className="text-xs font-bold text-white/80">{format(new Date(b.date), "MMM d, yyyy")}</p>
+                          <p className="text-[8px] text-[#4A6163] font-bold uppercase tracking-wider font-space">Date</p>
+                          <p className="text-xs font-bold text-[#242426]">{format(new Date(b.date), "MMM d, yyyy")}</p>
                         </div>
                       </div>
-                      <div className="bg-white/5 rounded-2xl p-3 border border-white/5 flex items-center gap-3">
-                        <Clock className="h-4 w-4 text-blue-400/60" />
+                      <div className="bg-[#FAF9F6] rounded-[4px] p-3 border border-[#EAEAEA] flex items-center gap-3">
+                        <Clock className="h-4 w-4 text-[#4A6163]" />
                         <div>
-                          <p className="text-[8px] text-white/30 font-bold uppercase tracking-tighter">Time Slot</p>
-                          <p className="text-xs font-bold text-white/80">{b.startTime} – {b.endTime}</p>
+                          <p className="text-[8px] text-[#4A6163] font-bold uppercase tracking-wider font-space">Time Slot</p>
+                          <p className="text-xs font-bold text-[#242426]">{b.startTime} – {b.endTime}</p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="mt-6 flex items-center justify-between border-t border-white/5 pt-5">
+                    <div className="mt-6 flex items-center justify-between border-t border-[#EAEAEA] pt-5">
                       <div>
-                        <p className="text-[10px] text-white/20 font-bold uppercase tracking-widest mb-1">{b.connectorType} · {b.estimatedKWh} kWh</p>
-                        <p className="text-xl font-black text-white">{formatCurrency(b.grandTotal)}</p>
+                        <p className="text-[10px] text-[#4A6163] font-bold uppercase tracking-wider font-space mb-1">{b.connectorType} · {b.estimatedKWh} kWh</p>
+                        <p className="text-xl font-bold text-[#242426] font-space">{formatCurrency(b.grandTotal)}</p>
                       </div>
                       <div className="flex gap-2">
                         <button
                           onClick={() => showDetails(b._id)}
-                          className="h-10 px-4 rounded-xl bg-white/5 border border-white/10 text-xs font-bold hover:bg-white/10 transition-colors"
+                          className="h-10 px-4 rounded-[4px] bg-[#FAF9F6] border border-[#D1D1D1] text-xs font-bold text-[#242426] hover:bg-[#EAEAEA] transition-colors font-space uppercase tracking-wider"
                         >
                           Details
                         </button>
@@ -391,7 +357,7 @@ function BookingsPage() {
                           <button
                             onClick={() => cancel(b)}
                             disabled={isBusy}
-                            className="h-10 px-4 rounded-xl bg-red-500/10 border border-red-500/10 text-red-400 text-xs font-bold hover:bg-red-500/20"
+                            className="h-10 px-4 rounded-[4px] bg-[#FBE8E4] border border-[#FBDED9] text-[#C64F38] text-xs font-bold hover:bg-[#FBDED9] font-space uppercase tracking-wider"
                           >
                             Cancel
                           </button>
@@ -400,7 +366,7 @@ function BookingsPage() {
                           <button
                             onClick={() => complete(b)}
                             disabled={isBusy}
-                            className="h-10 px-5 rounded-xl bg-emerald-500 text-black text-xs font-black shadow-lg shadow-emerald-500/20 active:scale-95 transition-all"
+                            className="h-10 px-5 rounded-[4px] bg-[#242426] text-white text-xs font-bold shadow-sm hover:bg-[#343436] active:scale-95 transition-all font-space uppercase tracking-wider"
                           >
                             Pay & Complete
                           </button>
@@ -409,7 +375,7 @@ function BookingsPage() {
                           <button
                             onClick={() => payAdvance(b)}
                             disabled={isBusy}
-                            className="h-10 px-5 rounded-xl bg-amber-500 text-black text-xs font-black shadow-lg shadow-amber-500/20 active:scale-95 transition-all"
+                            className="h-10 px-5 rounded-[4px] bg-[#C64F38] text-white text-xs font-bold shadow-sm hover:bg-[#B53F29] active:scale-95 transition-all font-space uppercase tracking-wider"
                           >
                             Pay Advance
                           </button>
@@ -425,25 +391,25 @@ function BookingsPage() {
       </div>
 
       <Dialog open={!!selectedBooking} onOpenChange={(o) => !o && setSelectedBooking(null)}>
-        <DialogContent className="max-w-md rounded-[2rem] bg-[#000814] border border-white/10 text-white p-8">
+        <DialogContent className="max-w-md rounded-[4px] bg-white border border-[#D1D1D1] text-[#242426] p-8 shadow-lg">
           <DialogHeader className="mb-6">
-            <DialogTitle className="text-2xl font-bold tracking-tight text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
+            <DialogTitle className="text-2xl font-bold tracking-tight text-[#242426] font-space uppercase" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
               Booking Summary
             </DialogTitle>
           </DialogHeader>
           {selectedBooking && (
             <div className="space-y-6">
               <div className="flex items-center gap-4">
-                <div className={`h-14 w-14 rounded-2xl bg-gradient-to-br ${iconColor[selectedBooking.status] ?? "from-emerald-600 to-emerald-400"} flex items-center justify-center`}>
-                  <FontAwesomeIcon icon={faChargingStation} className="h-7 w-7 text-white" />
+                <div className={`h-14 w-14 rounded-[4px] ${iconColor[selectedBooking.status] ?? "bg-[#EAEAEA] text-[#4A6163]"} flex items-center justify-center shadow-sm`}>
+                  <FontAwesomeIcon icon={faChargingStation} className="h-7 w-7" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg text-white">{(selectedBooking.station as Station)?.name}</h3>
-                  <p className="text-sm text-white/40">{(selectedBooking.station as Station)?.address?.city}</p>
+                  <h3 className="font-bold text-lg text-[#242426] font-space uppercase">{(selectedBooking.station as Station)?.name}</h3>
+                  <p className="text-sm text-[#4A6163] font-medium">{(selectedBooking.station as Station)?.address?.city}</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 bg-white/5 p-5 rounded-2xl border border-white/5">
+              <div className="grid grid-cols-2 gap-4 bg-[#FAF9F6] p-5 rounded-[4px] border border-[#EAEAEA]">
                 {[
                   { l: "Status", v: selectedBooking.status, s: statusColor[selectedBooking.status] },
                   { l: "Connector", v: selectedBooking.connectorType },
@@ -451,26 +417,26 @@ function BookingsPage() {
                   { l: "Time", v: `${selectedBooking.startTime} - ${selectedBooking.endTime}` },
                 ].map((item, i) => (
                   <div key={i} className="space-y-1">
-                    <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{item.l}</p>
+                    <p className="text-[9px] font-bold text-[#4A6163] uppercase tracking-wider font-space">{item.l}</p>
                     {item.s ? (
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${item.s}`}>{item.v}</span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-[4px] ${item.s} inline-block font-space uppercase`}>{item.v}</span>
                     ) : (
-                      <p className="font-bold text-sm text-white/80">{item.v}</p>
+                      <p className="font-bold text-sm text-[#242426]">{item.v}</p>
                     )}
                   </div>
                 ))}
               </div>
 
               <div className="space-y-3">
-                <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest ml-1">Payment Detail</p>
-                <div className="bg-white/5 border border-white/5 rounded-2xl p-5 space-y-3">
+                <p className="text-[9px] font-bold text-[#4A6163] uppercase tracking-wider font-space ml-1">Payment Detail</p>
+                <div className="bg-[#FAF9F6] border border-[#EAEAEA] rounded-[4px] p-5 space-y-3">
                   <div className="flex justify-between text-sm">
-                    <span className="text-white/40">Base Charging</span>
-                    <span className="text-white font-medium">{formatCurrency(selectedBooking.totalCost)}</span>
+                    <span className="text-[#4A6163] font-medium">Base Charging</span>
+                    <span className="text-[#242426] font-bold">{formatCurrency(selectedBooking.totalCost)}</span>
                   </div>
-                  <div className="flex justify-between text-sm font-bold border-t border-white/10 pt-3">
-                    <span className="text-white">Grand Total</span>
-                    <span className="text-emerald-400">{formatCurrency(selectedBooking.grandTotal)}</span>
+                  <div className="flex justify-between text-sm font-bold border-t border-[#EAEAEA] pt-3">
+                    <span className="text-[#242426] font-bold">Grand Total</span>
+                    <span className="text-[#C64F38] font-bold">{formatCurrency(selectedBooking.grandTotal)}</span>
                   </div>
                 </div>
               </div>
@@ -478,7 +444,7 @@ function BookingsPage() {
           )}
           <DialogFooter className="mt-8">
             <button
-              className="w-full h-12 bg-white/5 border border-white/10 text-white rounded-full font-bold hover:bg-white/10 transition-colors"
+              className="w-full h-12 bg-[#242426] hover:bg-[#343436] text-white rounded-[4px] font-bold transition-colors font-space uppercase tracking-wider"
               onClick={() => setSelectedBooking(null)}
             >
               Close

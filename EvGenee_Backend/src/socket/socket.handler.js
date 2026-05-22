@@ -48,7 +48,7 @@ const initializeSocket = (io) => {
        
         socket.on('ai:voice_chat', async (data) => {
             try {
-                const { message, threadId } = data;
+                const { message, threadId, location } = data;
                 console.log(`[Socket.IO] AI Chat request from ${socket.id}`);
                 
                 if (!socket.user) {
@@ -61,7 +61,7 @@ const initializeSocket = (io) => {
                     email: socket.user.email
                 };
 
-                const response = await processVoiceChat(message, threadId || socket.id, userInfo);
+                const response = await processVoiceChat(message, threadId || socket.id, userInfo, location);
                 socket.emit('ai:voice_response', { 
                     success: true, 
                     ...(typeof response === 'string' ? { response } : response), 

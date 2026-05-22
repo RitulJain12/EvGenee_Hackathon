@@ -115,11 +115,11 @@ export default function DirectionsPanel({
     maxHeight: "calc(100vh - 24px)",
     overflowY: "auto",
     zIndex: 99999,
-    background: "#0a0f1a",
-    border: "1px solid rgba(255,255,255,0.08)",
-    borderRadius: 20,
-    boxShadow: "0 20px 60px rgba(0,0,0,0.7)",
-    fontFamily: "system-ui,sans-serif",
+    background: "#FAF9F6",
+    border: "1px solid #D1D1D1",
+    borderRadius: 4,
+    boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+    fontFamily: "'Inter', sans-serif",
     scrollbarWidth: "none",
   };
 
@@ -132,10 +132,10 @@ export default function DirectionsPanel({
           display: "flex",
           alignItems: "center",
           gap: 10,
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          borderBottom: "1px solid #EAEAEA",
           position: "sticky",
           top: 0,
-          background: "#0a0f1a",
+          background: "#FAF9F6",
           zIndex: 1,
         }}
       >
@@ -143,16 +143,16 @@ export default function DirectionsPanel({
           style={{
             width: 32,
             height: 32,
-            borderRadius: 8,
-            background: "rgba(59,130,246,0.12)",
+            borderRadius: 4,
+            background: "#242426",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Route size={15} color="#3b82f6" />
+          <Route size={15} color="#FAF9F6" />
         </div>
-        <p style={{ margin: 0, fontWeight: 800, fontSize: 15, color: "#fff", flex: 1 }}>
+        <p style={{ margin: 0, fontWeight: 900, fontSize: 13, color: "#242426", flex: 1, fontFamily: "'Space Grotesk', sans-serif", textTransform: "uppercase", letterSpacing: "0.04em" }}>
           Directions
         </p>
         <button
@@ -160,14 +160,14 @@ export default function DirectionsPanel({
           style={{
             width: 30,
             height: 30,
-            borderRadius: 8,
-            border: "1px solid rgba(255,255,255,0.1)",
-            background: "rgba(255,255,255,0.05)",
+            borderRadius: 4,
+            border: "1px solid #D1D1D1",
+            background: "#ffffff",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "rgba(255,255,255,0.5)",
+            color: "#4A6163",
           }}
         >
           <X size={14} />
@@ -175,7 +175,7 @@ export default function DirectionsPanel({
       </div>
 
       {/* ── From / To ── */}
-      <div style={{ padding: "12px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+      <div style={{ padding: "12px 16px", borderBottom: "1px solid #EAEAEA" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div
             style={{
@@ -191,15 +191,15 @@ export default function DirectionsPanel({
                 width: 10,
                 height: 10,
                 borderRadius: "50%",
-                background: "#8b5cf6",
-                border: "2px solid #7c3aed",
+                background: "#FAF9F6",
+                border: "2px solid #4A6163",
               }}
             />
             <div
               style={{
                 width: 1.5,
                 height: 22,
-                background: "rgba(255,255,255,0.15)",
+                background: "#D1D1D1",
                 borderRadius: 2,
               }}
             />
@@ -208,43 +208,55 @@ export default function DirectionsPanel({
                 width: 10,
                 height: 10,
                 borderRadius: "50%",
-                background: "#3b82f6",
-                border: "2px solid #2563eb",
+                background: "#C64F38",
+                border: "2px solid #C64F38",
               }}
             />
           </div>
           <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6 }}>
             <div
               style={{
-                background: "rgba(255,255,255,0.05)",
-                borderRadius: 10,
+                background: "#ffffff",
+                border: "1px solid #D1D1D1",
+                borderRadius: 4,
                 padding: "7px 12px",
               }}
             >
               <p
                 style={{
                   margin: 0,
-                  fontSize: 12,
-                  color: "rgba(255,255,255,0.45)",
-                  fontWeight: 500,
+                  fontSize: 10,
+                  color: "#4A6163",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.04em",
+                  fontFamily: "'Space Grotesk', sans-serif"
                 }}
               >
                 From
               </p>
-              <p style={{ margin: 0, fontSize: 13, color: "#fff", fontWeight: 600 }}>
+              <p style={{ margin: 0, fontSize: 13, color: "#242426", fontWeight: 700 }}>
                 Your Location
               </p>
             </div>
             <div
               style={{
-                background: "rgba(59,130,246,0.08)",
-                border: "1px solid rgba(59,130,246,0.2)",
-                borderRadius: 10,
+                background: "#ffffff",
+                border: "1px solid #C64F38",
+                borderRadius: 4,
                 padding: "7px 12px",
               }}
             >
               <p
-                style={{ margin: 0, fontSize: 12, color: "rgba(59,130,246,0.6)", fontWeight: 500 }}
+                style={{
+                  margin: 0,
+                  fontSize: 10,
+                  color: "#C64F38",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.04em",
+                  fontFamily: "'Space Grotesk', sans-serif"
+                }}
               >
                 To
               </p>
@@ -252,7 +264,7 @@ export default function DirectionsPanel({
                 style={{
                   margin: 0,
                   fontSize: 13,
-                  color: "#3b82f6",
+                  color: "#242426",
                   fontWeight: 700,
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -261,7 +273,7 @@ export default function DirectionsPanel({
               >
                 {station.name}
               </p>
-              <p style={{ margin: "1px 0 0", fontSize: 11, color: "rgba(255,255,255,0.35)" }}>
+              <p style={{ margin: "1px 0 0", fontSize: 11, color: "#4A6163", fontWeight: 500 }}>
                 {station.address?.city}
               </p>
             </div>
@@ -273,7 +285,7 @@ export default function DirectionsPanel({
       <div
         style={{
           padding: "10px 16px",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          borderBottom: "1px solid #EAEAEA",
           display: "flex",
           gap: 8,
         }}
@@ -287,10 +299,10 @@ export default function DirectionsPanel({
               style={{
                 flex: 1,
                 height: 38,
-                borderRadius: 10,
-                border: `1.5px solid ${active ? "#3b82f6" : "rgba(255,255,255,0.08)"}`,
-                background: active ? "rgba(59,130,246,0.12)" : "rgba(255,255,255,0.03)",
-                color: active ? "#3b82f6" : "rgba(255,255,255,0.4)",
+                borderRadius: 4,
+                border: `1.5px solid ${active ? "#242426" : "#D1D1D1"}`,
+                background: active ? "#242426" : "#ffffff",
+                color: active ? "#FAF9F6" : "#4A6163",
                 cursor: "pointer",
                 display: "flex",
                 flexDirection: "column",
@@ -301,7 +313,7 @@ export default function DirectionsPanel({
               }}
             >
               <Icon size={14} />
-              <span style={{ fontSize: 10, fontWeight: 700 }}>{label}</span>
+              <span style={{ fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", fontFamily: "'Space Grotesk', sans-serif" }}>{label}</span>
             </button>
           );
         })}
@@ -318,8 +330,8 @@ export default function DirectionsPanel({
             gap: 10,
           }}
         >
-          <Loader2 size={24} color="#3b82f6" style={{ animation: "spin 1s linear infinite" }} />
-          <p style={{ margin: 0, fontSize: 13, color: "rgba(255,255,255,0.45)" }}>
+          <Loader2 size={24} color="#C64F38" style={{ animation: "spin 1s linear infinite" }} />
+          <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: "#4A6163", textTransform: "uppercase", letterSpacing: "0.04em", fontFamily: "'Space Grotesk', sans-serif" }}>
             Calculating routes…
           </p>
         </div>
@@ -338,10 +350,11 @@ export default function DirectionsPanel({
                   width: "100%",
                   textAlign: "left",
                   padding: "11px 14px",
-                  borderRadius: 12,
+                  borderRadius: 4,
                   cursor: "pointer",
-                  border: `1.5px solid ${active ? "#3b82f6" : "rgba(255,255,255,0.07)"}`,
-                  background: active ? "rgba(59,130,246,0.08)" : "rgba(255,255,255,0.02)",
+                  border: `1.5px solid ${active ? "#C64F38" : "#D1D1D1"}`,
+                  background: active ? "#ffffff" : "#ffffff",
+                  boxShadow: active ? "0 2px 8px rgba(0,0,0,0.04)" : "none",
                   transition: "all 0.15s",
                 }}
               >
@@ -351,11 +364,12 @@ export default function DirectionsPanel({
                   <div>
                     <span
                       style={{
-                        fontSize: 11,
+                        fontSize: 9,
                         fontWeight: 700,
-                        color: active ? "#3b82f6" : "rgba(255,255,255,0.3)",
+                        color: active ? "#C64F38" : "#4A6163",
                         textTransform: "uppercase",
-                        letterSpacing: 0.5,
+                        letterSpacing: "0.05em",
+                        fontFamily: "'Space Grotesk', sans-serif"
                       }}
                     >
                       {ROUTE_LABELS[i] ?? `Route ${i + 1}`}
@@ -365,15 +379,17 @@ export default function DirectionsPanel({
                         style={{
                           fontSize: 20,
                           fontWeight: 900,
-                          color: active ? "#fff" : "rgba(255,255,255,0.4)",
+                          color: "#242426",
+                          fontFamily: "'Space Grotesk', sans-serif"
                         }}
                       >
                         {fmtTime(r.durationMin)}
                       </span>
                       <span
                         style={{
-                          fontSize: 13,
-                          color: active ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.25)",
+                          fontSize: 12,
+                          color: "#4A6163",
+                          fontWeight: 600,
                         }}
                       >
                         {fmtDist(r.distanceKm)}
@@ -384,14 +400,15 @@ export default function DirectionsPanel({
                     <button
                       onClick={onStart}
                       style={{
-                        background: "#3b82f6",
-                        borderRadius: 8,
-                        padding: "4px 12px",
+                        background: "#242426",
+                        borderRadius: 2,
+                        padding: "6px 14px",
                         border: "none",
                         cursor: "pointer",
+                        transition: "transform 0.1s ease",
                       }}
                     >
-                      <span style={{ fontSize: 11, fontWeight: 800, color: "#fff" }}>GO ▶</span>
+                      <span style={{ fontSize: 10, fontWeight: 800, color: "#ffffff", fontFamily: "'Space Grotesk', sans-serif", textTransform: "uppercase", letterSpacing: "0.04em" }}>GO ▶</span>
                     </button>
                   )}
                 </div>
@@ -404,7 +421,7 @@ export default function DirectionsPanel({
       {/* ── No route found ── */}
       {!loading && routes.length === 0 && (
         <div style={{ padding: "24px 16px", textAlign: "center" }}>
-          <p style={{ margin: 0, fontSize: 13, color: "rgba(255,255,255,0.35)" }}>
+          <p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: "#4A6163", textTransform: "uppercase", letterSpacing: "0.04em", fontFamily: "'Space Grotesk', sans-serif" }}>
             No route found for this mode.
           </p>
         </div>
@@ -412,7 +429,7 @@ export default function DirectionsPanel({
 
       {/* ── Step by step ── */}
       {!loading && sel && sel.steps.length > 0 && (
-        <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+        <div style={{ borderTop: "1px solid #EAEAEA" }}>
           <button
             onClick={() => setStepsOpen((v) => !v)}
             style={{
@@ -428,19 +445,20 @@ export default function DirectionsPanel({
           >
             <span
               style={{
-                fontSize: 12,
+                fontSize: 10,
                 fontWeight: 700,
-                color: "rgba(255,255,255,0.5)",
+                color: "#4A6163",
                 textTransform: "uppercase",
-                letterSpacing: 0.5,
+                letterSpacing: "0.04em",
+                fontFamily: "'Space Grotesk', sans-serif"
               }}
             >
               Step-by-step · {sel.steps.length} steps
             </span>
             {stepsOpen ? (
-              <ChevronUp size={14} color="rgba(255,255,255,0.4)" />
+              <ChevronUp size={14} color="#4A6163" />
             ) : (
-              <ChevronDown size={14} color="rgba(255,255,255,0.4)" />
+              <ChevronDown size={14} color="#4A6163" />
             )}
           </button>
           {stepsOpen && (
@@ -459,21 +477,21 @@ export default function DirectionsPanel({
                       alignItems: "flex-start",
                       gap: 12,
                       padding: "8px 0",
-                      borderBottom: isLast ? "none" : "1px solid rgba(255,255,255,0.04)",
+                      borderBottom: isLast ? "none" : "1px solid #EAEAEA",
                     }}
                   >
                     <div
                       style={{
                         width: 28,
                         height: 28,
-                        borderRadius: 8,
-                        background: "rgba(255,255,255,0.06)",
+                        borderRadius: 4,
+                        background: "#242426",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         flexShrink: 0,
                         fontSize: 12,
-                        color: "#3b82f6",
+                        color: "#FAF9F6",
                         fontWeight: 700,
                       }}
                     >
@@ -484,8 +502,8 @@ export default function DirectionsPanel({
                         style={{
                           margin: 0,
                           fontSize: 13,
-                          color: "#fff",
-                          fontWeight: 500,
+                          color: "#242426",
+                          fontWeight: 600,
                           lineHeight: 1.3,
                         }}
                       >
@@ -496,7 +514,7 @@ export default function DirectionsPanel({
                           style={{
                             margin: "2px 0 0",
                             fontSize: 11,
-                            color: "rgba(255,255,255,0.3)",
+                            color: "#4A6163",
                           }}
                         >
                           {fmtDist(step.distance / 1000)}
@@ -513,10 +531,10 @@ export default function DirectionsPanel({
       )}
 
       {/* ── Footer: OSRM Attribution ── */}
-      <div style={{ padding: "10px 16px 14px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+      <div style={{ padding: "10px 16px 14px", borderTop: "1px solid #EAEAEA" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Clock size={13} color="rgba(255,255,255,0.3)" />
-          <p style={{ margin: 0, fontSize: 11, color: "rgba(255,255,255,0.3)" }}>
+          <Clock size={13} color="#4A6163" />
+          <p style={{ margin: 0, fontSize: 10, fontWeight: 600, color: "#4A6163", textTransform: "uppercase", letterSpacing: "0.04em", fontFamily: "'Space Grotesk', sans-serif" }}>
             Route via OpenStreetMap · OSRM
           </p>
         </div>

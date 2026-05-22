@@ -74,9 +74,9 @@ function ProfilePage() {
 
   if (loading)
     return (
-      <div className="h-screen grid place-items-center bg-[#000814]">
+      <div className="h-screen grid place-items-center bg-[#FAF9F6]">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-10 w-10 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
+          <div className="h-10 w-10 border-2 border-[#242426] border-t-transparent rounded-full animate-spin" />
         </div>
       </div>
     );
@@ -161,125 +161,80 @@ function ProfilePage() {
 
   return (
     <div
-      className="min-h-screen bg-[#000814] text-white overflow-x-hidden"
-      style={{ paddingBottom: "5.5rem", fontFamily: "'DM Sans', sans-serif" }}
+      className="min-h-screen bg-[#FAF9F6] text-[#242426] overflow-x-hidden"
+      style={{ paddingBottom: "6.5rem", fontFamily: "'Inter', sans-serif" }}
     >
-      {/* Premium Background Image */}
-      <div className="fixed inset-0 z-0">
-        <img
-          src="/hero-bg.png"
-          alt="EV Charging"
-          className="w-full h-full object-cover opacity-20"
-        />
-        <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-[1px]" />
-      </div>
-
-      {/* Background glows */}
-      <div
-        className="fixed top-0 left-0 w-[600px] h-[400px] pointer-events-none z-10"
-        style={{
-          background: "radial-gradient(ellipse at 0% 0%, rgba(16,185,129,0.1) 0%, transparent 70%)",
-        }}
-      />
-      <div
-        className="fixed bottom-0 right-0 w-[500px] h-[400px] pointer-events-none z-10"
-        style={{
-          background: "radial-gradient(ellipse at 100% 100%, rgba(59,130,246,0.08) 0%, transparent 70%)",
-        }}
-      />
-
       <div
         className="relative z-10 max-w-lg mx-auto px-4"
-        style={{ paddingTop: "calc(var(--safe-top, 0px) + 1.5rem)" }}
+        style={{ paddingTop: "calc(var(--safe-top, 0px) + 2rem)" }}
       >
-        {/* ── Hero Header - RESTORED ORIGINAL ─────────────────────────── */}
-        <div className="relative rounded-3xl overflow-hidden mb-5">
-          <div
-            style={{
-              background: "linear-gradient(135deg, #064e3b 0%, #065f46 40%, #047857 70%, #10b981 100%)",
-            }}
-            className="absolute inset-0"
-          />
-          <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/5 rounded-full" />
-          <div className="absolute -bottom-12 left-1/4 w-48 h-48 bg-white/[0.03] rounded-full" />
-          <div className="absolute top-4 right-16 w-6 h-6 bg-white/10 rounded-full" />
-          <div className="absolute bottom-8 right-8 w-3 h-3 bg-green-300/30 rounded-full" />
-          <div
-            className="absolute inset-0 opacity-[0.04]"
-            style={{
-              backgroundImage: "repeating-linear-gradient(0deg, white 0px, white 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, white 0px, white 1px, transparent 1px, transparent 40px)",
-            }}
-          />
-
-          <div className="relative z-10 p-6 pb-5">
-            <div className="flex items-center gap-4 mb-5">
-              <div className="relative">
-                <div className="h-[72px] w-[72px] rounded-2xl bg-white/20 border-2 border-white/30 flex items-center justify-center text-2xl font-black text-white shadow-xl">
-                  {initials}
-                </div>
-                <div className="absolute -bottom-1 -right-1 h-5 w-5 bg-green-400 rounded-full border-2 border-[#065f46] flex items-center justify-center">
-                  <div className="h-1.5 w-1.5 bg-white rounded-full" />
-                </div>
+        {/* ── Hero Header ── */}
+        <div className="relative bg-white border border-[#D1D1D1] rounded-[4px] mb-5 p-6 shadow-sm">
+          <div className="flex items-center gap-4 mb-5">
+            <div className="relative">
+              <div className="h-[72px] w-[72px] rounded-[4px] bg-[#4A6163] flex items-center justify-center text-2xl font-bold text-white shadow-sm font-space uppercase">
+                {initials}
               </div>
-
-              <div className="flex-1 min-w-0">
-                <h1 className="text-xl font-extrabold text-white leading-tight truncate" style={{ fontFamily: "'Poppins', sans-serif" }}>
-                  {user.name}
-                </h1>
-                <p className="text-white/65 text-xs flex items-center gap-1.5 mt-0.5 truncate">
-                  <Mail className="h-3 w-3 shrink-0" />
-                  {user.email}
-                </p>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="inline-flex items-center gap-1 bg-white/15 backdrop-blur-sm rounded-full px-2.5 py-0.5 border border-white/20">
-                    <Shield className="h-3 w-3 text-green-200" />
-                    <span className="text-[11px] font-semibold text-white/90 capitalize">
-                      {user.role}
-                    </span>
-                  </span>
-                  <span className="inline-flex items-center gap-1 bg-green-400/20 rounded-full px-2.5 py-0.5 border border-green-300/20">
-                    <CheckCircle2 className="h-3 w-3 text-green-300" />
-                    <span className="text-[11px] font-semibold text-green-200">Verified</span>
-                  </span>
-                </div>
+              <div className="absolute -bottom-1 -right-1 h-5 w-5 bg-[#C64F38] rounded-full border-2 border-white flex items-center justify-center">
+                <div className="h-1.5 w-1.5 bg-white rounded-full" />
               </div>
             </div>
 
-            {/* Stats strip - Restored original style with Fleet info */}
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { label: "Fleet Size", value: savedVehicles.length.toString(), icon: Car },
-                {
-                  label: "Connectors",
-                  value: Array.from(new Set(savedVehicles.map(v => v.connectorType))).join(', ') || "—",
-                  icon: Plug,
-                },
-                { label: "Status", value: "Active", icon: Zap },
-              ].map(({ label, value, icon: Icon }) => (
-                <div key={label} className="bg-white/10 backdrop-blur-sm rounded-xl p-2.5 border border-white/10 text-center">
-                  <Icon className="h-3.5 w-3.5 text-green-200 mx-auto mb-1" />
-                  <p className="text-white font-bold text-[10px] leading-tight mb-0.5 truncate px-1">{value}</p>
-                  <p className="text-white/50 text-[9px] uppercase tracking-tighter">{label}</p>
-                </div>
-              ))}
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl font-bold text-[#242426] font-space uppercase tracking-wide leading-tight truncate">
+                {user.name}
+              </h1>
+              <p className="text-[#4A6163] text-xs flex items-center gap-1.5 mt-1 truncate font-medium">
+                <Mail className="h-3.5 w-3.5 shrink-0 text-[#4A6163]" />
+                {user.email}
+              </p>
+              <div className="flex items-center gap-2 mt-2.5">
+                <span className="inline-flex items-center gap-1 bg-[#FAF9F6] border border-[#D1D1D1] rounded-[4px] px-2.5 py-0.5 text-[#242426] text-[10px] font-bold uppercase tracking-wider font-space">
+                  <Shield className="h-3 w-3 text-[#4A6163]" />
+                  {user.role}
+                </span>
+                <span className="inline-flex items-center gap-1 bg-[#FBE8E4] border border-[#FBDED9] rounded-[4px] px-2.5 py-0.5 text-[#C64F38] text-[10px] font-bold uppercase tracking-wider font-space">
+                  <CheckCircle2 className="h-3 w-3 text-[#C64F38]" />
+                  Verified
+                </span>
+              </div>
             </div>
+          </div>
+
+          {/* Stats strip */}
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { label: "Fleet Size", value: savedVehicles.length.toString(), icon: Car },
+              {
+                label: "Connectors",
+                value: Array.from(new Set(savedVehicles.map(v => v.connectorType))).join(', ') || "—",
+                icon: Plug,
+              },
+              { label: "Status", value: "Active", icon: Zap },
+            ].map(({ label, value, icon: Icon }) => (
+              <div key={label} className="bg-[#FAF9F6] border border-[#EAEAEA] rounded-[4px] p-2.5 text-center">
+                <Icon className="h-3.5 w-3.5 text-[#4A6163] mx-auto mb-1" />
+                <p className="text-[#242426] font-bold text-[11px] leading-tight mb-0.5 truncate px-1 font-space uppercase">{value}</p>
+                <p className="text-[#4A6163] text-[9px] font-bold uppercase tracking-wider font-space">{label}</p>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* ── Fleet Management ────────────────────────────────────────── */}
-        <div className="rounded-2xl p-5 mb-3 border border-white/10 bg-white/[0.04] backdrop-blur-md">
+        {/* ── Fleet Management ── */}
+        <div className="bg-white border border-[#D1D1D1] rounded-[4px] p-6 mb-4 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <div className="h-7 w-7 rounded-lg bg-blue-500/15 border border-blue-500/20 flex items-center justify-center">
-                <Car className="h-3.5 w-3.5 text-blue-400" />
+              <div className="h-7 w-7 rounded-[4px] bg-[#EAEAEA] border border-[#D1D1D1] flex items-center justify-center">
+                <Car className="h-3.5 w-3.5 text-[#4A6163]" />
               </div>
-              <span className="text-sm font-bold text-white">My Fleet</span>
+              <span className="text-sm font-bold text-[#242426] font-space uppercase tracking-wider">My Fleet</span>
             </div>
             <Button
               size="sm"
               variant="ghost"
               onClick={() => setShowAddForm(!showAddForm)}
-              className="h-8 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/10"
+              className="h-8 rounded-[4px] bg-[#FBE8E4] text-[#C64F38] border border-[#FBDED9] hover:bg-[#FBDED9] font-space uppercase tracking-wider text-xs"
             >
               {showAddForm ? <X className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
               {showAddForm ? "Cancel" : "Add Car"}
@@ -287,46 +242,46 @@ function ProfilePage() {
           </div>
 
           {showAddForm && (
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="bg-[#FAF9F6] border border-[#D1D1D1] rounded-[4px] p-4 mb-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <Label className="text-[10px] text-white/40 uppercase">Nickname</Label>
+                  <Label className="text-[10px] text-[#4A6163] font-bold uppercase tracking-wider font-space">Nickname</Label>
                   <Input
                     placeholder="e.g. My Nexon"
                     value={newVehicle.nickname}
                     onChange={(e) => setNewVehicle({ ...newVehicle, nickname: e.target.value })}
-                    className="bg-black/20 border-white/10 h-10 text-sm"
+                    className="bg-white border-[#D1D1D1] text-[#242426] focus:border-[#C64F38] focus:ring-[#C64F38] h-10 text-sm rounded-[4px]"
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-[10px] text-white/40 uppercase">Reg. Number</Label>
+                  <Label className="text-[10px] text-[#4A6163] font-bold uppercase tracking-wider font-space">Reg. Number</Label>
                   <Input
                     placeholder="MH 01..."
                     value={newVehicle.vehicleNumber}
                     onChange={(e) => setNewVehicle({ ...newVehicle, vehicleNumber: e.target.value.toUpperCase() })}
-                    className="bg-black/20 border-white/10 h-10 text-sm font-mono"
+                    className="bg-white border-[#D1D1D1] text-[#242426] focus:border-[#C64F38] focus:ring-[#C64F38] h-10 text-sm font-mono rounded-[4px]"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <Label className="text-[10px] text-white/40 uppercase">Type</Label>
+                  <Label className="text-[10px] text-[#4A6163] font-bold uppercase tracking-wider font-space">Type</Label>
                   <Select value={newVehicle.type} onValueChange={(v) => setNewVehicle({ ...newVehicle, type: v })}>
-                    <SelectTrigger className="bg-black/20 border-white/10 h-10 text-sm">
+                    <SelectTrigger className="bg-white border-[#D1D1D1] text-[#242426] focus:border-[#C64F38] focus:ring-[#C64F38] h-10 text-sm rounded-[4px]">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#000814] text-white border-white/10">
+                    <SelectContent className="bg-white border border-[#D1D1D1] text-[#242426] rounded-[4px]">
                       {["EV", "Hybrid", "Petrol", "Diesel"].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-[10px] text-white/40 uppercase">Connector</Label>
+                  <Label className="text-[10px] text-[#4A6163] font-bold uppercase tracking-wider font-space">Connector</Label>
                   <Select value={newVehicle.connectorType} onValueChange={(v) => setNewVehicle({ ...newVehicle, connectorType: v })}>
-                    <SelectTrigger className="bg-black/20 border-white/10 h-10 text-sm">
+                    <SelectTrigger className="bg-white border-[#D1D1D1] text-[#242426] focus:border-[#C64F38] focus:ring-[#C64F38] h-10 text-sm rounded-[4px]">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#000814] text-white border-white/10">
+                    <SelectContent className="bg-white border border-[#D1D1D1] text-[#242426] rounded-[4px]">
                       {["CCS2", "CHAdeMO", "Type2"].map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                     </SelectContent>
                   </Select>
@@ -335,7 +290,7 @@ function ProfilePage() {
               <Button 
                 onClick={addVehicle} 
                 disabled={processingVehicle}
-                className="w-full h-10 bg-blue-600 hover:bg-blue-700 font-bold rounded-xl"
+                className="w-full h-10 bg-[#C64F38] hover:bg-[#B53F29] text-white font-bold rounded-[4px] font-space uppercase tracking-wider"
               >
                 {processingVehicle ? <Loader2 className="h-4 w-4 animate-spin" /> : "Register Car"}
               </Button>
@@ -344,66 +299,62 @@ function ProfilePage() {
 
           <div className="space-y-2">
             {savedVehicles.map((v, i) => (
-              <div key={i} className="flex items-center gap-3 bg-blue-500/10 border border-blue-500/10 rounded-xl p-3 group">
-                <Car className="h-4 w-4 text-blue-400" />
+              <div key={i} className="flex items-center gap-3 bg-[#FAF9F6] border border-[#EAEAEA] rounded-[4px] p-3 group">
+                <Car className="h-4 w-4 text-[#4A6163]" />
                 <div className="flex-1">
-                  <p className="text-xs font-bold text-white leading-none">{v.nickname}</p>
-                  <p className="text-[9px] text-blue-300/60 mt-1 uppercase tracking-tight">{v.type} · {v.connectorType} · {v.vehicleNumber || 'N/A'}</p>
+                  <p className="text-xs font-bold text-[#242426] leading-none">{v.nickname}</p>
+                  <p className="text-[9px] text-[#4A6163] mt-1 font-bold uppercase tracking-wider font-space">{v.type} · {v.connectorType} · {v.vehicleNumber || 'N/A'}</p>
                 </div>
                 <button 
                   disabled={processingVehicle}
                   onClick={() => removeVehicle(i)} 
-                  className="text-white/20 hover:text-red-400 transition-colors disabled:opacity-30"
+                  className="text-[#4A6163]/40 hover:text-[#C64F38] transition-colors disabled:opacity-30"
                 >
                   {processingVehicle ? <Loader2 className="h-3 w-3 animate-spin" /> : <X className="h-3.5 w-3.5" />}
                 </button>
               </div>
             ))}
-            {savedVehicles.length === 0 && !showAddForm && <p className="text-center py-4 text-xs text-white/20">Fleet is currently empty</p>}
+            {savedVehicles.length === 0 && !showAddForm && <p className="text-center py-4 text-xs text-[#4A6163]/40 font-space uppercase tracking-wider">Fleet is empty</p>}
           </div>
         </div>
 
-        {/* ── Account Section ───────────────────────────────────────── */}
-        <div className="rounded-2xl p-5 mb-3 border border-white/10 bg-white/[0.04] backdrop-blur-md">
+        {/* ── Profile Settings ── */}
+        <div className="bg-white border border-[#D1D1D1] rounded-[4px] p-6 mb-4 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
-            <div className="h-7 w-7 rounded-lg bg-green-500/15 border border-green-500/20 flex items-center justify-center">
-              <User className="h-3.5 w-3.5 text-green-400" />
+            <div className="h-7 w-7 rounded-[4px] bg-[#EAEAEA] border border-[#D1D1D1] flex items-center justify-center">
+              <User className="h-3.5 w-3.5 text-[#4A6163]" />
             </div>
-            <span className="text-sm font-bold text-white">Profile Settings</span>
+            <span className="text-sm font-bold text-[#242426] font-space uppercase tracking-wider">Profile Settings</span>
           </div>
 
           <div className="space-y-3">
             <div className="space-y-1.5">
-              <Label className="text-[11px] font-semibold text-white/40 uppercase tracking-widest">Full Name</Label>
+              <Label className="text-[10px] text-[#4A6163] font-bold uppercase tracking-wider font-space">Full Name</Label>
               <div className="relative">
                 <Input
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="bg-white/[0.05] border-white/10 text-white rounded-xl h-11 pr-10"
+                  className="bg-white border-[#D1D1D1] text-[#242426] focus:border-[#C64F38] focus:ring-[#C64F38] h-11 text-sm rounded-[4px] pr-10"
                 />
-                <Pencil className="absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/20" />
+                <Pencil className="absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#4A6163]/40" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* ── Actions ─────────────────────────────────────────────── */}
+        {/* ── Action Triggers ── */}
         <div className="space-y-3">
           <button
             onClick={save}
             disabled={saving}
-            className="w-full h-12 rounded-2xl font-bold text-sm text-white mb-1 transition-all active:scale-[0.98] disabled:opacity-70"
-            style={{
-              background: "linear-gradient(90deg, #059669 0%, #10b981 100%)",
-              boxShadow: "0 0 20px rgba(16,185,129,0.2)",
-            }}
+            className="w-full h-12 bg-[#242426] hover:bg-[#343436] text-white font-bold text-sm rounded-[4px] transition-all font-space uppercase tracking-wider shadow-sm active:scale-[0.98] disabled:opacity-70"
           >
             {saving ? <Loader2 className="h-4 w-4 animate-spin mx-auto" /> : "Save Changes"}
           </button>
 
           <button
             onClick={handleLogout}
-            className="w-full h-12 rounded-2xl font-semibold text-sm text-red-400 border border-red-500/10 hover:bg-red-500/10 transition-colors"
+            className="w-full h-12 rounded-[4px] font-bold text-sm text-[#C64F38] border border-[#C64F38] hover:bg-[#FBE8E4] transition-colors font-space uppercase tracking-wider"
           >
             <LogOut className="h-4 w-4 inline mr-2" /> Sign out
           </button>

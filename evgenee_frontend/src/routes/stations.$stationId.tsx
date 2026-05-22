@@ -111,32 +111,26 @@ function ChargerAvailabilityCard({
   const pct = totalUnits > 0 ? (available / totalUnits) * 100 : 0;
 
   const noSlots = !hasUpcomingSlots;
-  const statusColor = noSlots ? "text-white/30" : available === 0 ? "text-red-400" : pct <= 30 ? "text-amber-400" : "text-emerald-400";
-  const barColor   = noSlots ? "bg-white/15"   : available === 0 ? "bg-red-500"   : pct <= 30 ? "bg-amber-500"   : "bg-emerald-500";
+  const statusColor = noSlots ? "text-[#4A6163]/50" : available === 0 ? "text-[#C64F38]" : pct <= 30 ? "text-[#F39C12]" : "text-[#0F9F59]";
+  const barColor   = noSlots ? "bg-[#D1D1D1]"   : available === 0 ? "bg-[#C64F38]"   : pct <= 30 ? "bg-[#F39C12]"   : "bg-[#0F9F59]";
   const badgeLabel = noSlots ? "No Slots Today" : available === 0 ? "All Occupied" : `${available} Free`;
   const badgeClass = noSlots
-    ? "bg-white/8 text-white/40 border border-white/10"
+    ? "bg-[#FAF9F6] text-[#4A6163] border border-[#D1D1D1]"
     : available === 0
-    ? "bg-red-500/15 text-red-400 border border-red-500/20"
+    ? "bg-[#FBE8E4] text-[#C64F38] border border-[#FBDED9]"
     : pct <= 30
-    ? "bg-amber-500/15 text-amber-400 border border-amber-500/20"
-    : "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20";
+    ? "bg-[#FDF3E3] text-[#F39C12] border border-[#FCE6CF]"
+    : "bg-[#E2F3EC] text-[#0F9F59] border border-[#CDECE0]";
 
   return (
-    <div
-      className="rounded-2xl border p-3.5 space-y-3"
-      style={{
-        background: "linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)",
-        borderColor: "rgba(255,255,255,0.08)",
-      }}
-    >
+    <div className="rounded-[4px] border border-[#D1D1D1] bg-white p-5 shadow-sm space-y-4">
       {/* Header — plain text, no icon that looks like a machine pill */}
       <div className="flex items-center justify-between">
-        <span className="text-xs font-bold text-white/50 uppercase tracking-wider flex items-center gap-1.5">
-          <PlugZap className="h-3.5 w-3.5 text-white/30" />
+        <span className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider flex items-center gap-1.5 font-space">
+          <PlugZap className="h-3.5 w-3.5 text-[#4A6163]" />
           {connector} · {totalUnits} {totalUnits === 1 ? "Machine" : "Machines"}
         </span>
-        <span className={cn("text-xs font-black px-2.5 py-1 rounded-full", badgeClass)}>
+        <span className={cn("text-[10px] font-bold px-2.5 py-1 rounded-[4px] font-space uppercase", badgeClass)}>
           {badgeLabel}
         </span>
       </div>
@@ -149,24 +143,24 @@ function ChargerAvailabilityCard({
             <div
               key={i}
               className={cn(
-                "flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-[11px] font-bold transition-all",
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] border text-[10px] font-bold transition-all font-space uppercase tracking-wider",
                 noSlots
-                  ? "bg-white/5 border-white/10 text-white/30"
+                  ? "bg-[#FAF9F6] border-[#D1D1D1] text-[#4A6163]/50"
                   : isFree
-                  ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)] animate-in fade-in zoom-in duration-300"
-                  : "bg-red-500/10 border-red-500/20 text-red-400/70 opacity-60",
+                  ? "bg-[#E2F3EC] border-[#CDECE0] text-[#0F9F59] shadow-sm animate-in fade-in zoom-in duration-300"
+                  : "bg-[#FBE8E4] border-[#FBDED9] text-[#C64F38] opacity-60",
               )}
             >
               {isFree ? (
                 <div className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0F9F59] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#0F9F59]"></span>
                 </div>
               ) : (
                 <Zap className="h-3 w-3 shrink-0" />
               )}
               Machine {i + 1}
-              <span className="text-[10px] font-normal opacity-70 ml-0.5">
+              <span className="text-[9px] font-normal opacity-70 ml-0.5">
                 {noSlots ? "—" : isFree ? "Free" : "Busy"}
               </span>
             </div>
@@ -176,20 +170,20 @@ function ChargerAvailabilityCard({
 
       {/* Progress bar + summary line */}
       <div className="space-y-1.5">
-        <div className="h-1.5 w-full bg-white/8 rounded-full overflow-hidden">
+        <div className="h-1.5 w-full bg-[#FAF9F6] border border-[#EAEAEA] rounded-full overflow-hidden">
           <div
             className={cn("h-full rounded-full transition-all duration-500", barColor)}
             style={{ width: noSlots ? "0%" : `${pct}%` }}
           />
         </div>
-        <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider">
-          <span className={cn("font-black", statusColor)}>
+        <div className="flex items-center justify-between text-[9px] font-bold uppercase tracking-wider font-space">
+          <span className={cn("font-bold", statusColor)}>
             {noSlots
               ? "No upcoming slots for today"
               : `${available} of ${totalUnits} available`}
           </span>
           {selectedSlot && !noSlots && (
-            <span className="text-white/30">for slot {selectedSlot.startTime}</span>
+            <span className="text-[#4A6163]">for slot {selectedSlot.startTime}</span>
           )}
         </div>
       </div>
@@ -492,8 +486,8 @@ function StationDetail() {
 
   if (loading) {
     return (
-      <div className="h-screen grid place-items-center">
-        <Loader2 className="h-7 w-7 animate-spin text-primary" />
+      <div className="h-screen grid place-items-center bg-[#FAF9F6]">
+        <div className="h-8 w-8 border-2 border-[#242426] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -524,58 +518,69 @@ function StationDetail() {
   const totalMachinesForConnector = selectedPricing?.portCount ?? 1;
 
   return (
-    <div className="max-w-2xl mx-auto pb-8">
+    <div
+      className="min-h-screen bg-[#FAF9F6] text-[#242426] pb-12"
+      style={{ fontFamily: "'Inter', sans-serif" }}
+    >
       {/* Hero */}
-      <div className="relative h-56 bg-[image:var(--gradient-primary)] overflow-hidden">
+      <div className="relative h-64 bg-[#EAEAEA] overflow-hidden border-b border-[#D1D1D1]">
         {station.Images?.[0] && (
           <img
             src={station.Images[0]}
             alt={station.name}
-            className="absolute inset-0 h-full w-full object-cover opacity-90"
+            className="absolute inset-0 h-full w-full object-cover"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#242426]/75 via-[#242426]/30 to-transparent" />
         <button
           onClick={() => nav({ to: "/" })}
-          className="absolute top-4 left-4 h-10 w-10 rounded-full bg-card/95 grid place-items-center"
+          className="absolute top-4 left-4 h-10 w-10 rounded-[4px] bg-white border border-[#D1D1D1] grid place-items-center hover:bg-[#FAF9F6] transition-colors shadow-sm"
           style={{ marginTop: "var(--safe-top)" }}
         >
-          <ArrowLeft className="h-5 w-5" />
+          <ArrowLeft className="h-5 w-5 text-[#242426]" />
         </button>
-        <div className="absolute bottom-4 left-4 right-4 text-white">
-          <div className="flex items-center gap-2 mb-2">
-            <Badge className={station.isOpen ? "bg-success text-success-foreground" : "bg-slate-500 text-white"}>
-              {station.isOpen ? "OPEN NOW" : "CURRENTLY CLOSED"}
-            </Badge>
-            <span className="text-[10px] font-bold tracking-widest bg-black/40 px-2 py-0.5 rounded backdrop-blur-sm">
-              {station.openingHours || "24/7 SERVICE"}
+        <div className="absolute bottom-6 left-6 right-6 text-white">
+          <div className="flex items-center gap-2.5 mb-2.5">
+            <span className={cn(
+              "text-[10px] font-bold px-2.5 py-0.5 rounded-[4px] border uppercase font-space tracking-wider",
+              station.isOpen 
+                ? "bg-[#E2F3EC] text-[#0F9F59] border-[#CDECE0]" 
+                : "bg-[#EAEAEA] text-[#4A6163] border-[#D1D1D1]"
+            )}>
+              {station.isOpen ? "Open Now" : "Currently Closed"}
+            </span>
+            <span className="text-[10px] font-bold tracking-wider bg-[#242426]/60 text-white px-2 py-0.5 rounded-[4px] backdrop-blur-sm uppercase font-space">
+              {station.openingHours || "24/7 Service"}
             </span>
           </div>
-          <h1 className="text-2xl font-bold">{station.name}</h1>
-          <p className="text-sm opacity-90 flex items-center gap-1">
-            <MapPin className="h-3.5 w-3.5" /> {station.address.street}, {station.address.city}
+          <h1 className="text-2xl font-bold font-space uppercase tracking-tight text-white mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            {station.name}
+          </h1>
+          <p className="text-xs text-white/90 flex items-center gap-1.5 mt-1 font-medium">
+            <MapPin className="h-3.5 w-3.5 text-white/80 shrink-0" /> 
+            {station.address.street}, {station.address.city}
           </p>
         </div>
       </div>
 
-      <div className="p-4 space-y-4">
+      <div className="max-w-2xl mx-auto px-6 mt-6 space-y-6">
         {/* Quick stats */}
-        <div className="bg-card border-2 border-destructive/20 rounded-2xl p-4 grid grid-cols-2 gap-2 shadow-[var(--shadow-card)]">
-          <div className="text-center border-r border-border">
-            <p className="text-destructive font-bold text-sm">
+        <div className="bg-white border border-[#D1D1D1] rounded-[4px] p-4 grid grid-cols-2 gap-2 shadow-sm">
+          <div className="text-center border-r border-[#EAEAEA]">
+            <p className="text-[#C64F38] font-bold text-sm font-space uppercase tracking-wider">
               {station.typeOfConnectors[0] ?? "—"}
             </p>
-            <p className="text-xs text-muted-foreground">Connection</p>
+            <p className="text-[9px] text-[#4A6163] font-bold uppercase tracking-wider font-space mt-0.5">Connection</p>
           </div>
           <div className="text-center">
-            <p className="text-destructive font-bold text-sm">
+            <p className="text-[#242426] font-bold text-sm font-space uppercase tracking-wider">
               {formatCurrency(minPrice, currency)}
             </p>
-            <p className="text-xs text-muted-foreground">Per kWh</p>
+            <p className="text-[9px] text-[#4A6163] font-bold uppercase tracking-wider font-space mt-0.5">Per kWh</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 text-sm">
+        <div className="grid grid-cols-2 gap-3">
           <InfoRow
             icon={<Zap className="h-4 w-4" />}
             label={`${station.chargingSpeed} kW`}
@@ -598,24 +603,24 @@ function StationDetail() {
           />
         </div>
 
-        {/* Station Mechanic */}
+        {/* Station Support / Mechanic */}
         {station.mechanic && station.mechanic.name && (
-          <div className="bg-card border border-border rounded-2xl p-4 shadow-[var(--shadow-card)] flex flex-col space-y-3 relative overflow-hidden">
+          <div className="bg-white border border-[#D1D1D1] rounded-[4px] p-5 shadow-sm flex flex-col space-y-3 relative overflow-hidden">
             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-              <Wrench className="h-20 w-20" />
+              <Wrench className="h-20 w-20 text-[#4A6163]" />
             </div>
             <div className="flex items-center gap-3 relative z-10">
-              <div className="h-10 w-10 rounded-xl bg-emerald-500/15 flex items-center justify-center shrink-0 border border-emerald-500/20">
-                <Wrench className="h-5 w-5 text-emerald-500" />
+              <div className="h-10 w-10 rounded-[4px] bg-[#FBE8E4] border border-[#FBDED9] flex items-center justify-center shrink-0">
+                <Wrench className="h-5 w-5 text-[#C64F38]" />
               </div>
               <div>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-0.5">Station Support</p>
-                <p className="font-bold text-sm">{station.name}</p>
+                <p className="text-[9px] font-bold text-[#4A6163] uppercase tracking-widest mb-0.5 font-space">Station Support</p>
+                <p className="font-bold text-sm text-[#242426]">{station.name}</p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-xs text-muted-foreground">{station.mechanic.speciality}</span>
+                  <span className="text-xs text-[#4A6163] font-medium">{station.mechanic.speciality}</span>
                   {station.mechanic.rating && (
-                    <span className="flex items-center gap-0.5 text-xs font-bold text-amber-500">
-                      <Star className="h-3 w-3 fill-amber-500" /> {station.mechanic.rating}
+                    <span className="flex items-center gap-0.5 text-xs font-bold text-[#C64F38]">
+                      <Star className="h-3 w-3 fill-[#C64F38] text-[#C64F38]" /> {station.mechanic.rating}
                     </span>
                   )}
                 </div>
@@ -623,49 +628,52 @@ function StationDetail() {
             </div>
             <a 
               href={`tel:${station.mechanic.phone}`}
-              className="w-full flex items-center justify-center gap-2 py-2.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/30 rounded-xl font-bold text-sm transition-colors relative z-10"
+              className="w-full flex items-center justify-center gap-2 py-3 bg-[#FAF9F6] hover:bg-[#FAF9F6]/50 text-[#C64F38] border border-[#C64F38] rounded-[4px] font-bold text-xs transition-colors relative z-10 font-space uppercase tracking-wider"
             >
               <Phone className="h-4 w-4" /> Call {station.mechanic.phone}
             </a>
           </div>
         )}
 
-        {/* Booking section */}
+        {/* Booking Section */}
         {isMyStation ? (
-          <div className="bg-card rounded-2xl p-6 text-center shadow-[var(--shadow-card)] space-y-3">
-            <LayoutDashboard className="h-10 w-10 mx-auto text-primary" />
-            <h2 className="font-bold text-lg">Your Station</h2>
-            <p className="text-sm text-muted-foreground pb-2">
+          <div className="bg-white border border-[#D1D1D1] rounded-[4px] p-6 text-center shadow-sm space-y-4">
+            <LayoutDashboard className="h-10 w-10 mx-auto text-[#C64F38]" />
+            <h2 className="font-bold text-lg text-[#242426] font-space uppercase">Your Station</h2>
+            <p className="text-xs text-[#4A6163] pb-2 font-medium">
               As the owner, you can manage bookings and settings from your dashboard.
             </p>
             <Button
               onClick={() => nav({ to: "/owner/stations/$stationId", params: { stationId } })}
-              className="w-full bg-[image:var(--gradient-primary)] text-primary-foreground font-bold tracking-tight"
+              className="w-full h-11 bg-[#242426] hover:bg-[#343436] text-white font-bold text-xs rounded-[4px] font-space uppercase tracking-wider shadow-sm"
             >
               VIEW BOOKINGS DASHBOARD
             </Button>
           </div>
         ) : (
-          <div className="bg-card rounded-2xl p-4 shadow-[var(--shadow-card)] space-y-4">
-            <h2 className="font-bold text-lg">Book a Slot</h2>
+          <div className="bg-white border border-[#D1D1D1] rounded-[4px] p-6 shadow-sm space-y-5">
+            <h2 className="font-bold text-base text-[#242426] font-space uppercase tracking-wider border-b border-[#EAEAEA] pb-3" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              Book a Slot
+            </h2>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label>Date</Label>
+                <Label className="text-[10px] text-[#4A6163] font-bold uppercase tracking-wider font-space">Date</Label>
                 <Input
                   type="date"
                   value={date}
                   min={format(new Date(), "yyyy-MM-dd")}
                   onChange={(e) => setDate(e.target.value)}
+                  className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] focus:border-[#C64F38] focus:ring-[#C64F38] h-10 text-sm rounded-[4px]"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>Connector</Label>
+                <Label className="text-[10px] text-[#4A6163] font-bold uppercase tracking-wider font-space">Connector</Label>
                 <Select value={connector} onValueChange={setConnector}>
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] h-10 text-sm rounded-[4px] focus:border-[#C64F38] focus:ring-[#C64F38]">
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white border border-[#D1D1D1] text-[#242426] rounded-[4px]">
                     {station.typeOfConnectors.map((c) => {
                       const portCount =
                         station.pricing?.find((p) => p.connectorType === c)?.portCount ?? 1;
@@ -680,13 +688,6 @@ function StationDetail() {
               </div>
             </div>
 
-            {/* ── NEW: Charger Availability Card ───────────────────────────
-                Shown as soon as a connector is selected and slots load.
-                Updates automatically after any booking via socket:
-                  booking → server emits availability:updated
-                           → onAvailabilityUpdate() re-fetches slots
-                           → slots state updates → this card re-renders
-            ──────────────────────────────────────────────────────────── */}
             {connector && slots.length > 0 && (
               <ChargerAvailabilityCard
                 connector={connector}
@@ -698,7 +699,7 @@ function StationDetail() {
             )}
 
             <div>
-              <Label className="mb-2 block">Start time</Label>
+              <Label className="text-[10px] text-[#4A6163] font-bold uppercase tracking-wider font-space mb-2 block">Start Time</Label>
               <div className="grid grid-cols-4 gap-2 max-h-52 overflow-y-auto">
                 {slots.map((s) => {
                   const expired = isSlotExpired(s, date);
@@ -714,24 +715,24 @@ function StationDetail() {
                         if (!endTime) setEndTime(s.endTime);
                       }}
                       className={cn(
-                        "text-xs font-medium py-2 rounded-xl border transition relative",
+                        "text-[10px] font-bold py-3.5 rounded-[4px] border transition relative font-space uppercase tracking-wider",
                         isSelected
-                          ? "bg-[image:var(--gradient-primary)] text-primary-foreground border-transparent shadow-[var(--shadow-glow)]"
+                          ? "bg-[#242426] text-white border-transparent shadow-sm"
                           : expired
-                          ? "bg-muted text-muted-foreground border-border opacity-50 grayscale cursor-not-allowed"
+                          ? "bg-[#FAF9F6] text-[#4A6163]/40 border-[#EAEAEA] cursor-not-allowed opacity-50"
                           : s.isAvailable
-                          ? "bg-card border-border hover:border-primary"
-                          : "bg-muted text-muted-foreground border-border opacity-50 cursor-not-allowed",
+                          ? "bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] hover:border-[#C64F38]"
+                          : "bg-[#FAF9F6] text-[#4A6163]/40 border-[#EAEAEA] cursor-not-allowed opacity-50",
                       )}
                     >
                       {s.startTime}
                       {s.isAvailable && !expired && (
-                        <span className="text-[10px] block font-normal opacity-80 mt-0.5">
-                          {s.availableUnits}/{s.totalUnits || totalMachinesForConnector || 1} free
+                        <span className="text-[8px] block font-bold opacity-80 mt-1 uppercase">
+                          {s.availableUnits}/{s.totalUnits || totalMachinesForConnector || 1} Free
                         </span>
                       )}
                       {expired && (
-                        <span className="text-[9px] block font-bold text-destructive leading-tight mt-0.5">
+                        <span className="text-[8px] block font-bold text-[#C64F38] leading-tight mt-1 uppercase">
                           PAST
                         </span>
                       )}
@@ -739,8 +740,8 @@ function StationDetail() {
                   );
                 })}
                 {slots.length === 0 && (
-                  <p className="col-span-4 text-sm text-muted-foreground py-4 text-center">
-                    No slots
+                  <p className="col-span-4 text-xs font-bold text-[#4A6163]/40 py-4 text-center font-space uppercase tracking-wider">
+                    No slots available
                   </p>
                 )}
               </div>
@@ -748,42 +749,42 @@ function StationDetail() {
 
             {/* Peak pricing badge */}
             {peakInfo.isPeak && (
-              <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 rounded-xl px-3 py-2">
-                <Zap className="h-4 w-4 text-amber-500 shrink-0" />
-                <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">
+              <div className="flex items-center gap-2 bg-[#FDF3E3] border border-[#FCE6CF] rounded-[4px] px-3 py-2.5">
+                <Zap className="h-4 w-4 text-[#F39C12] shrink-0" />
+                <p className="text-[10px] font-bold text-[#F39C12] font-space uppercase tracking-wider leading-tight">
                   ⚡ Peak Hours — {peakInfo.multiplier}x Rate applies to this slot
                 </p>
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold uppercase tracking-wider opacity-60">End time</Label>
+                <Label className="text-[10px] text-[#4A6163] font-bold uppercase tracking-wider font-space">End Time</Label>
                 <div className="relative">
                   <Input 
                     type="time" 
                     value={endTime} 
                     onChange={(e) => setEndTime(e.target.value)} 
-                    className="bg-accent/30 border-border h-11 text-sm pl-10"
+                    className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] focus:border-[#C64F38] focus:ring-[#C64F38] h-10 text-sm rounded-[4px] pl-10"
                   />
-                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#4A6163]/60" />
                 </div>
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold uppercase tracking-wider opacity-60">Duration</Label>
-                <div className="h-11 flex items-center px-3 bg-muted/30 rounded-xl border border-border text-xs font-semibold text-muted-foreground">
+                <Label className="text-[10px] text-[#4A6163] font-bold uppercase tracking-wider font-space">Duration</Label>
+                <div className="h-10 flex items-center px-3 bg-[#FAF9F6] rounded-[4px] border border-[#D1D1D1] text-[10px] font-bold text-[#4A6163] font-space uppercase tracking-wider">
                   {selectedSlot ? "60 mins" : "—"}
                 </div>
               </div>
             </div>
 
             <div className="space-y-3">
-              <Label className="text-xs font-bold uppercase tracking-wider opacity-60">Vehicle Information</Label>
+              <Label className="text-[10px] text-[#4A6163] font-bold uppercase tracking-wider font-space">Vehicle Information</Label>
               
               {/* Fleet Selector (Badges) */}
               {user?.savedVehicles && user.savedVehicles.length > 0 && (
                 <div className="space-y-2">
-                  <p className="text-[10px] font-medium text-muted-foreground uppercase">Select from your fleet:</p>
+                  <p className="text-[9px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Select from your fleet:</p>
                   <div className="flex flex-wrap gap-2">
                     {user.savedVehicles.map((v, i) => (
                       <button
@@ -791,10 +792,10 @@ function StationDetail() {
                         type="button"
                         onClick={() => setVehicleNumber(v.vehicleNumber || "")}
                         className={cn(
-                          "px-3 py-2 rounded-xl border text-[11px] font-bold transition-all flex items-center gap-1.5",
+                          "px-3 py-2 rounded-[4px] border text-[10px] font-bold transition-all flex items-center gap-1.5 font-space uppercase tracking-wider",
                           vehicleNumber === v.vehicleNumber
-                            ? "bg-primary/10 border-primary text-primary shadow-[0_0_10px_rgba(16,185,129,0.1)]"
-                            : "bg-card border-border hover:border-primary/50 text-muted-foreground"
+                            ? "bg-[#FBE8E4] border-[#FBDED9] text-[#C64F38] shadow-sm"
+                            : "bg-[#FAF9F6] border-[#D1D1D1] hover:border-[#4A6163] text-[#4A6163]"
                         )}
                       >
                         <Car className="h-3 w-3" />
@@ -808,13 +809,13 @@ function StationDetail() {
 
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <p className="text-[10px] font-medium text-muted-foreground uppercase">
+                  <p className="text-[9px] font-bold text-[#4A6163] uppercase tracking-wider font-space">
                     {user?.savedVehicles && user.savedVehicles.length > 0 ? "Or enter manually:" : "Enter Vehicle Number:"}
                   </p>
                   {vehicleNumber && (
                     <button 
                       onClick={() => setVehicleNumber("")}
-                      className="text-[10px] text-destructive font-bold uppercase"
+                      className="text-[10px] text-[#C64F38] font-bold uppercase font-space"
                     >
                       Clear
                     </button>
@@ -825,46 +826,47 @@ function StationDetail() {
                     placeholder="e.g. MH 01 AB 1234"
                     value={vehicleNumber}
                     onChange={(e) => setVehicleNumber(e.target.value.toUpperCase())}
-                    className="bg-accent/30 border-border h-12 text-sm font-mono tracking-wider pl-10"
+                    className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] focus:border-[#C64F38] focus:ring-[#C64F38] h-11 text-sm font-mono tracking-widest pl-10 rounded-[4px]"
                   />
-                  <Hash className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Hash className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#4A6163]/60" />
                 </div>
                 {(!user?.savedVehicles || user.savedVehicles.length === 0) && (
-                  <p className="text-[10px] text-muted-foreground">
-                    Tip: Save your cars in <Link to="/profile" className="text-primary underline font-bold">Profile</Link> for one-tap booking.
+                  <p className="text-[10px] text-[#4A6163] font-medium">
+                    Tip: Save your cars in <Link to="/profile" className="text-[#C64F38] underline font-bold hover:text-[#B53F29]">Profile</Link> for one-tap booking.
                   </p>
                 )}
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 pt-2">
               <Button
                 variant="outline"
                 onClick={() => {
                   sessionStorage.setItem("pendingDirections", stationId);
                   nav({ to: "/" });
                 }}
+                className="h-12 border border-[#D1D1D1] bg-[#FAF9F6] text-[#242426] hover:bg-[#EAEAEA] rounded-[4px] text-xs font-bold font-space uppercase tracking-wider shadow-sm flex items-center justify-center"
               >
-                <Navigation className="h-4 w-4 mr-1" /> Navigate
+                <Navigation className="h-4 w-4 mr-1 text-[#242426]" /> Navigate
               </Button>
               <Button
                 onClick={submitBooking}
                 disabled={booking || !selectedSlot}
-                className="bg-[image:var(--gradient-primary)] text-primary-foreground shadow-[var(--shadow-glow)] font-semibold"
+                className="h-12 bg-[#C64F38] hover:bg-[#B53F29] text-white rounded-[4px] text-xs font-bold font-space uppercase tracking-wider shadow-sm flex items-center justify-center disabled:opacity-50"
               >
-                {booking ? <Loader2 className="h-4 w-4 animate-spin" /> : "PAY 20% ADVANCE"}
+                {booking ? <Loader2 className="h-4 w-4 animate-spin text-white" /> : "PAY 20% ADVANCE"}
               </Button>
             </div>
           </div>
         )}
 
         {/* Reviews */}
-        <div className="bg-card rounded-2xl p-4 shadow-[var(--shadow-card)] space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="font-bold">Reviews</h3>
+        <div className="bg-white border border-[#D1D1D1] rounded-[4px] p-6 shadow-sm space-y-5">
+          <div className="flex items-center justify-between border-b border-[#EAEAEA] pb-3">
+            <h3 className="font-bold text-base text-[#242426] font-space uppercase tracking-wider" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Reviews</h3>
             {avgRating > 0 && (
-              <div className="flex items-center gap-1 text-warning text-sm font-bold">
-                <Star className="h-4 w-4 fill-current" />
+              <div className="flex items-center gap-1 text-[#C64F38] text-xs font-bold font-space uppercase">
+                <Star className="h-4 w-4 fill-current text-[#C64F38]" />
                 {avgRating.toFixed(1)}
               </div>
             )}
@@ -872,28 +874,28 @@ function StationDetail() {
 
           <div className="space-y-3">
             {station.reviews?.slice(0, 5).map((r, i) => (
-              <div key={i} className="border-b border-border last:border-0 pb-2 last:pb-0">
-                <div className="flex items-center gap-1 text-warning mb-1">
+              <div key={i} className="border-b border-[#EAEAEA] pb-3 last:border-0 last:pb-0">
+                <div className="flex items-center gap-1 text-[#C64F38] mb-1">
                   {Array.from({ length: 5 }).map((_, k) => (
                     <Star
                       key={k}
-                      className={`h-3 w-3 ${k < r.rating ? "fill-current" : "opacity-30"}`}
+                      className={`h-3 w-3 ${k < r.rating ? "fill-[#C64F38]" : "opacity-30"}`}
                     />
                   ))}
                 </div>
-                <p className="text-sm">{r.comment}</p>
+                <p className="text-xs text-[#242426] leading-relaxed font-medium mt-1">{r.comment}</p>
               </div>
             ))}
             {(!station.reviews || station.reviews.length === 0) && (
-              <p className="text-sm text-muted-foreground text-center py-2">
+              <p className="text-xs font-bold text-[#4A6163]/40 text-center py-4 font-space uppercase tracking-wider">
                 No reviews yet. Be the first!
               </p>
             )}
           </div>
 
           {/* Add Review Form */}
-          <div className="pt-4 border-t border-border">
-            <p className="text-sm font-bold mb-3">Leave a Review</p>
+          <div className="pt-4 border-t border-[#EAEAEA]">
+            <p className="text-xs font-bold text-[#242426] uppercase tracking-wider font-space mb-3">Leave a Review</p>
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -901,13 +903,13 @@ function StationDetail() {
                     key={star}
                     type="button"
                     onClick={() => setReviewRating(star)}
-                    className="transition-transform active:scale-90"
+                    className="transition-transform active:scale-90 text-[#C64F38]"
                   >
                     <Star
                       className={`h-6 w-6 ${
                         star <= reviewRating
-                          ? "text-warning fill-current"
-                          : "text-muted-foreground opacity-30"
+                          ? "fill-[#C64F38]"
+                          : "text-[#4A6163]/30 opacity-30"
                       }`}
                     />
                   </button>
@@ -918,18 +920,18 @@ function StationDetail() {
                   placeholder="Share your experience..."
                   value={reviewComment}
                   onChange={(e) => setReviewComment(e.target.value)}
-                  className="bg-accent/50 border-0 focus-visible:ring-1"
+                  className="bg-[#FAF9F6] border border-[#D1D1D1] text-[#242426] focus:border-[#C64F38] focus:ring-[#C64F38] h-10 text-xs rounded-[4px] px-3.5"
                 />
                 <Button
                   size="icon"
                   onClick={submitReview}
                   disabled={reviewing || !reviewComment.trim()}
-                  className="shrink-0 bg-[image:var(--gradient-primary)]"
+                  className="h-10 w-10 bg-[#C64F38] hover:bg-[#B53F29] text-white rounded-[4px] flex items-center justify-center shrink-0 shadow-sm"
                 >
                   {reviewing ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin text-white" />
                   ) : (
-                    <Send className="h-4 w-4" />
+                    <Send className="h-4 w-4 text-white" />
                   )}
                 </Button>
               </div>
@@ -937,7 +939,7 @@ function StationDetail() {
           </div>
         </div>
 
-        <Link to="/bookings" className="block text-center text-sm text-primary font-semibold py-2">
+        <Link to="/bookings" className="block text-center text-xs text-[#C64F38] hover:text-[#B53F29] font-bold uppercase tracking-wider font-space py-2">
           View my bookings →
         </Link>
       </div>
@@ -947,13 +949,13 @@ function StationDetail() {
 
 function InfoRow({ icon, label, sub }: { icon: React.ReactNode; label: string; sub: string }) {
   return (
-    <div className="bg-card border border-border rounded-xl p-3 flex items-center gap-2.5">
-      <div className="h-9 w-9 rounded-full bg-accent grid place-items-center text-primary">
+    <div className="bg-white border border-[#D1D1D1] rounded-[4px] p-3 flex items-center gap-3 shadow-sm">
+      <div className="h-9 w-9 rounded-[4px] bg-[#FAF9F6] border border-[#EAEAEA] grid place-items-center text-[#4A6163]">
         {icon}
       </div>
       <div className="min-w-0">
-        <p className="font-semibold text-sm truncate">{label}</p>
-        <p className="text-xs text-muted-foreground truncate">{sub}</p>
+        <p className="font-bold text-xs text-[#242426] font-space uppercase tracking-wider truncate">{label}</p>
+        <p className="text-[9px] text-[#4A6163] font-bold uppercase tracking-wider font-space truncate">{sub}</p>
       </div>
     </div>
   );

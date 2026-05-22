@@ -300,26 +300,39 @@ function OwnerPage() {
   };
 
   const PIE_COLORS = [
-    "oklch(0.68 0.19 148)",
-    "oklch(0.78 0.17 75)",
-    "oklch(0.62 0.18 200)",
-    "oklch(0.62 0.22 27)",
-    "oklch(0.7 0.18 60)",
+    "#C64F38", // terracotta
+    "#4A6163", // slate green
+    "#0F9F59", // forest green
+    "#E2F3EC", // light green
+    "#FAF9F6", // light grey bg
   ];
 
   return (
     <div
-      className="max-w-3xl mx-auto p-4 space-y-4"
-      style={{ paddingTop: "calc(var(--safe-top) + 1.5rem)" }}
+      className="max-w-3xl mx-auto p-4 space-y-5 relative min-h-screen pb-20"
+      style={{
+        fontFamily: "'Inter', sans-serif",
+        paddingTop: "calc(var(--safe-top) + 2rem)",
+      }}
     >
-      <div className="flex items-center justify-between">
+      {/* Project Texture */}
+      <div
+        className="fixed inset-0 z-0 pointer-events-none opacity-[0.03]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "128px 128px",
+        }}
+      />
+
+      <div className="flex items-center justify-between relative z-10">
         <div>
-          <h1 className="text-2xl font-black text-white">Owner Dashboard</h1>
-          <p className="text-sm text-white/70 font-medium">Manage stations & bookings</p>
+          <h1 className="text-2xl font-bold text-[#242426] font-space uppercase tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Owner Dashboard</h1>
+          <p className="text-xs text-[#4A6163] font-medium">Manage stations & bookings</p>
         </div>
         <Button
           onClick={() => nav({ to: "/owner/new" })}
-          className="bg-[image:var(--gradient-primary)] text-primary-foreground shadow-[var(--shadow-glow)]"
+          className="bg-[#242426] hover:bg-[#343436] text-white font-bold rounded-[4px] text-xs uppercase tracking-wider transition-all font-space shadow-sm flex items-center justify-center h-10 px-4"
         >
           <Plus className="h-4 w-4 mr-1" />
           Add Station
@@ -327,36 +340,36 @@ function OwnerPage() {
       </div>
 
       {/* KPI cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Kpi icon={<MapPin />} label="Stations" value={stations.length.toString()} />
-        <Kpi icon={<Calendar />} label="Active Bookings" value={stats.active.toString()} />
-        <Kpi icon={<Zap />} label="Total kWh" value={stats.totalKWh.toFixed(0)} />
-        <Kpi icon={<IndianRupee />} label="Revenue" value={formatCurrency(stats.revenue)} />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 relative z-10">
+        <Kpi icon={<MapPin className="h-4 w-4 text-[#C64F38]" />} label="Stations" value={stations.length.toString()} />
+        <Kpi icon={<Calendar className="h-4 w-4 text-[#C64F38]" />} label="Active Bookings" value={stats.active.toString()} />
+        <Kpi icon={<Zap className="h-4 w-4 text-[#C64F38]" />} label="Total kWh" value={stats.totalKWh.toFixed(0)} />
+        <Kpi icon={<IndianRupee className="h-4 w-4 text-[#C64F38]" />} label="Revenue" value={formatCurrency(stats.revenue)} />
       </div>
 
       {/* Charts */}
-      <div className="grid md:grid-cols-2 gap-3">
-        <div className="bg-card rounded-2xl p-4 shadow-[var(--shadow-card)]">
-          <h3 className="font-bold mb-2 text-sm text-white/90 flex items-center gap-1.5">
-            <TrendingUp className="h-4 w-4 text-primary" />
+      <div className="grid md:grid-cols-2 gap-3 relative z-10">
+        <div className="bg-white border border-[#D1D1D1] rounded-[4px] p-4 shadow-sm">
+          <h3 className="font-bold mb-3 text-xs text-[#242426] uppercase tracking-wider font-space flex items-center gap-1.5" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+            <TrendingUp className="h-4 w-4 text-[#C64F38]" />
             Bookings (last 7 days)
           </h3>
           <div className="h-44">
             <ResponsiveContainer>
               <BarChart data={stats.trend}>
-                <XAxis dataKey="day" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
+                <XAxis dataKey="day" tick={{ fontSize: 10, fontFamily: "Space Grotesk" }} stroke="#4A6163" />
+                <YAxis tick={{ fontSize: 10, fontFamily: "Space Grotesk" }} stroke="#4A6163" allowDecimals={false} />
                 <Tooltip />
-                <Bar dataKey="count" fill="oklch(0.68 0.19 148)" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="count" fill="#C64F38" radius={[2, 2, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
-        <div className="bg-card rounded-2xl p-4 shadow-[var(--shadow-card)]">
-          <h3 className="font-bold mb-2 text-sm text-white/90">Booking status</h3>
+        <div className="bg-white border border-[#D1D1D1] rounded-[4px] p-4 shadow-sm">
+          <h3 className="font-bold mb-3 text-xs text-[#242426] uppercase tracking-wider font-space" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Booking status</h3>
           <div className="h-44">
             {stats.statusData.length === 0 ? (
-              <div className="grid place-items-center h-full text-xs text-muted-foreground">
+              <div className="grid place-items-center h-full text-xs text-[#4A6163]/50">
                 No data
               </div>
             ) : (
@@ -366,14 +379,14 @@ function OwnerPage() {
                     data={stats.statusData}
                     dataKey="value"
                     nameKey="name"
-                    outerRadius={60}
-                    label
+                    outerRadius={55}
+                    label={{ fontSize: 10, fontFamily: "Space Grotesk" }}
                   >
                     {stats.statusData.map((_, i) => (
                       <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                     ))}
                   </Pie>
-                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <Legend wrapperStyle={{ fontSize: 10, fontFamily: "Space Grotesk" }} />
                 </PieChart>
               </ResponsiveContainer>
             )}
@@ -382,17 +395,17 @@ function OwnerPage() {
       </div>
 
       {/* Stations list */}
-      <div className="space-y-3">
-        <h2 className="font-bold text-white/90">Your Stations</h2>
+      <div className="space-y-3 relative z-10">
+        <h2 className="font-bold text-[#242426] uppercase tracking-wider text-xs font-space" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Your Stations</h2>
         {loading ? (
           <div className="py-12 grid place-items-center">
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            <Loader2 className="h-6 w-6 animate-spin text-[#C64F38]" />
           </div>
         ) : stations.length === 0 ? (
-          <div className="bg-card rounded-2xl p-8 text-center shadow-[var(--shadow-card)]">
-            <Zap className="h-12 w-12 mx-auto text-muted-foreground/30 mb-2" />
-            <p className="font-semibold">No stations yet</p>
-            <p className="text-sm text-muted-foreground">
+          <div className="bg-white border border-[#D1D1D1] rounded-[4px] p-8 text-center shadow-sm">
+            <Zap className="h-12 w-12 mx-auto text-[#4A6163]/20 mb-3" />
+            <p className="font-bold text-sm text-[#242426] uppercase tracking-wider font-space">No stations yet</p>
+            <p className="text-xs text-[#4A6163] mt-1">
               Add your first charging station to get started.
             </p>
           </div>
@@ -400,18 +413,18 @@ function OwnerPage() {
           stations.map((s) => (
             <div
               key={s._id}
-              className="bg-card rounded-2xl p-4 shadow-[var(--shadow-card)] flex items-center gap-3"
+              className="bg-white border border-[#D1D1D1] rounded-[4px] p-4 shadow-sm flex items-center gap-3"
             >
-              <div className="h-12 w-12 rounded-xl bg-[image:var(--gradient-primary)] grid place-items-center shrink-0">
-                <Zap className="h-6 w-6 text-white" fill="white" />
+              <div className="h-10 w-10 rounded-[4px] bg-[#FBE8E4] border border-[#FBDED9] grid place-items-center text-[#C64F38] shrink-0">
+                <Zap className="h-5 w-5" fill="currentColor" />
               </div>
               <Link
                 to="/owner/stations/$stationId"
                 params={{ stationId: s._id }}
-                className="flex-1 min-w-0 hover:opacity-80 transition-opacity"
+                className="flex-1 min-w-0 hover:opacity-85 transition-opacity"
               >
-                <p className="font-bold truncate">{s.name}</p>
-                <p className="text-xs text-muted-foreground truncate">
+                <p className="font-bold text-[#242426] text-sm truncate">{s.name}</p>
+                <p className="text-xs text-[#4A6163] truncate">
                   {s.address.city} · {s.availablePorts}/{s.totalPorts} ports · {s.openingHours}
                 </p>
               </Link>
@@ -420,17 +433,18 @@ function OwnerPage() {
                   variant="ghost"
                   size="icon"
                   onClick={() => startEdit(s)}
-                  className="text-muted-foreground hover:text-primary"
+                  className="text-[#4A6163] hover:text-[#C64F38] hover:bg-[#FAF9F6] rounded-[4px] h-8 w-8"
                 >
-                  <Edit2 className="h-4 w-4" />
+                  <Edit2 className="h-3.5 w-3.5" />
                 </Button>
                 <Switch
                   checked={s.isOpen}
                   disabled={busyId === s._id}
                   onCheckedChange={() => toggle(s)}
+                  className="data-[state=checked]:bg-[#0F9F59] data-[state=unchecked]:bg-[#D1D1D1]"
                 />
                 <Power
-                  className={`h-4 w-4 ${s.isOpen ? "text-success" : "text-muted-foreground"}`}
+                  className={`h-4 w-4 ${s.isOpen ? "text-[#0F9F59]" : "text-[#4A6163]/40"}`}
                 />
               </div>
             </div>
@@ -440,81 +454,89 @@ function OwnerPage() {
 
       {/* Edit Station Modal */}
       <Dialog open={!!editingStation} onOpenChange={(o) => !o && setEditingStation(null)}>
-        <DialogContent className="max-w-[500px] max-h-[90vh] overflow-y-auto rounded-2xl">
+        <DialogContent className="max-w-[500px] max-h-[85vh] overflow-y-auto rounded-[4px] bg-white border border-[#D1D1D1] text-[#242426]">
           <DialogHeader>
-            <DialogTitle>Edit Station</DialogTitle>
+            <DialogTitle className="text-base font-bold text-[#242426] uppercase tracking-wider font-space" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Edit Station</DialogTitle>
           </DialogHeader>
-          <div className="space-y-6 py-4">
+          <div className="space-y-5 py-3">
             {/* Basic Info */}
             <div className="space-y-3">
-              <h3 className="font-bold text-sm text-primary">Basic Info</h3>
-              <div className="space-y-1.5">
-                <Label>Name</Label>
+              <h3 className="font-bold text-xs text-[#C64F38] uppercase tracking-wider font-space" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Basic Info</h3>
+              <div className="space-y-1">
+                <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Name</Label>
                 <Input
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                  className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                 />
               </div>
-              <div className="space-y-1.5">
-                <Label>Operator</Label>
+              <div className="space-y-1">
+                <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Operator</Label>
                 <Input
                   value={editForm.operator}
                   onChange={(e) => setEditForm({ ...editForm, operator: e.target.value })}
+                  className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                 />
               </div>
-              <div className="space-y-1.5">
-                <Label>Image URLs</Label>
+              <div className="space-y-1">
+                <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Image URLs (comma separated)</Label>
                 <Input
                   value={editForm.image}
                   onChange={(e) => setEditForm({ ...editForm, image: e.target.value })}
+                  className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                 />
               </div>
             </div>
 
             {/* Location & Map */}
             <div className="space-y-3">
-              <h3 className="font-bold text-sm text-primary">Location</h3>
-              <div className="space-y-1.5">
-                <Label>Street</Label>
+              <h3 className="font-bold text-xs text-[#C64F38] uppercase tracking-wider font-space" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Location</h3>
+              <div className="space-y-1">
+                <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Street</Label>
                 <Input
                   value={editForm.street}
                   onChange={(e) => setEditForm({ ...editForm, street: e.target.value })}
+                  className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1.5">
-                  <Label>City</Label>
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">City</Label>
                   <Input
                     value={editForm.city}
                     onChange={(e) => setEditForm({ ...editForm, city: e.target.value })}
+                    className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>State</Label>
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">State</Label>
                   <Input
                     value={editForm.state}
                     onChange={(e) => setEditForm({ ...editForm, state: e.target.value })}
+                    className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                   />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1.5">
-                  <Label>Postal Code</Label>
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Postal Code</Label>
                   <Input
                     value={editForm.postalCode}
                     onChange={(e) => setEditForm({ ...editForm, postalCode: e.target.value })}
+                    className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Country</Label>
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Country</Label>
                   <Input
                     value={editForm.country}
                     onChange={(e) => setEditForm({ ...editForm, country: e.target.value })}
+                    className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                   />
                 </div>
               </div>
               <div className="pt-2">
-                <Label className="block mb-2">Pin on Map</Label>
+                <Label className="text-[10px] font-bold text-[#4A6163] block mb-2 uppercase tracking-wider font-space">Pin on Map</Label>
                 <LocationPicker
                   lat={parseFloat(editForm.lat) || 0}
                   lng={parseFloat(editForm.lng) || 0}
@@ -527,48 +549,52 @@ function OwnerPage() {
 
             {/* Capacity & Pricing */}
             <div className="space-y-3">
-              <h3 className="font-bold text-sm text-primary">Capacity & Pricing</h3>
+              <h3 className="font-bold text-xs text-[#C64F38] uppercase tracking-wider font-space" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Capacity & Pricing</h3>
               <div className="grid grid-cols-3 gap-2">
-                <div className="space-y-1.5">
-                  <Label>Speed (kW)</Label>
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Speed (kW)</Label>
                   <Input
                     type="number"
                     value={editForm.chargingSpeed}
                     onChange={(e) => setEditForm({ ...editForm, chargingSpeed: e.target.value })}
+                    className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Total Ports</Label>
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Total Ports</Label>
                   <Input
                     type="number"
                     value={editForm.totalPorts}
                     onChange={(e) => setEditForm({ ...editForm, totalPorts: e.target.value })}
+                    className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Available</Label>
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Available</Label>
                   <Input
                     type="number"
                     value={editForm.availablePorts}
                     onChange={(e) => setEditForm({ ...editForm, availablePorts: e.target.value })}
+                    className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                   />
                 </div>
               </div>
-              <div className="space-y-1.5">
-                <Label>Platform Fee (%)</Label>
+              <div className="space-y-1">
+                <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Platform Fee (%)</Label>
                 <Input
                   type="number"
                   value={editForm.platformFee}
                   onChange={(e) => setEditForm({ ...editForm, platformFee: e.target.value })}
+                  className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                 />
               </div>
 
               <div>
-                <Label className="block mb-2">Connectors</Label>
+                <Label className="text-[10px] font-bold text-[#4A6163] block mb-2 uppercase tracking-wider font-space">Connectors</Label>
                 {editConnectors.map((c, i) => (
                   <div key={i} className="flex gap-2 mb-2">
                     <select
-                      className="flex-1 border border-input rounded-md px-3 h-10 bg-background"
+                      className="flex-1 bg-[#FAF9F6] border border-[#D1D1D1] text-[#242426] text-xs h-10 rounded-[4px] px-3 focus:outline-none focus:border-[#C64F38]"
                       value={c.type}
                       onChange={(e) =>
                         setEditConnectors(
@@ -583,7 +609,7 @@ function OwnerPage() {
                       ))}
                     </select>
                     <Input
-                      className="flex-1"
+                      className="flex-1 bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                       type="number"
                       placeholder="Price/kWh"
                       value={c.price}
@@ -602,6 +628,7 @@ function OwnerPage() {
                       onClick={() =>
                         setEditConnectors(editConnectors.filter((_, idx) => idx !== i))
                       }
+                      className="text-[#4A6163] hover:text-[#C64F38] h-10 w-10 hover:bg-[#FAF9F6] rounded-[4px]"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -614,6 +641,7 @@ function OwnerPage() {
                   onClick={() =>
                     setEditConnectors([...editConnectors, { type: "Type2", price: "10" }])
                   }
+                  className="border-[#D1D1D1] text-[#4A6163] hover:bg-[#FAF9F6] rounded-[4px] text-[10px] uppercase font-bold tracking-wider font-space h-9"
                 >
                   <Plus className="h-3.5 w-3.5 mr-1" />
                   Add connector
@@ -623,54 +651,58 @@ function OwnerPage() {
 
             {/* Contact & Misc */}
             <div className="space-y-3">
-              <h3 className="font-bold text-sm text-primary">Contact & Misc</h3>
-              <div className="space-y-1.5">
-                <Label>Opening Hours</Label>
+              <h3 className="font-bold text-xs text-[#C64F38] uppercase tracking-wider font-space" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Contact & Misc</h3>
+              <div className="space-y-1">
+                <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Opening Hours</Label>
                 <Input
                   value={editForm.openingHours}
                   onChange={(e) => setEditForm({ ...editForm, openingHours: e.target.value })}
+                  className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1.5">
-                  <Label>Phone</Label>
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Phone</Label>
                   <Input
                     value={editForm.phone}
                     onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                    className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <Label>Email</Label>
+                <div className="space-y-1">
+                  <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Email</Label>
                   <Input
                     type="email"
                     value={editForm.email}
                     onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                    className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                   />
                 </div>
               </div>
-              <div className="space-y-1.5">
-                <Label>Amenities</Label>
+              <div className="space-y-1">
+                <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Amenities (comma separated)</Label>
                 <Input
                   value={editForm.amenities}
                   onChange={(e) => setEditForm({ ...editForm, amenities: e.target.value })}
+                  className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                 />
               </div>
             </div>
           </div>
-          <DialogFooter className="flex gap-2 sticky bottom-0 bg-background/95 backdrop-blur py-2 border-t border-border mt-4">
+          <DialogFooter className="flex gap-2 sticky bottom-0 bg-white py-2 border-t border-[#EAEAEA] mt-4">
             <Button
               variant="outline"
               onClick={() => setEditingStation(null)}
-              className="rounded-xl"
+              className="border-[#D1D1D1] text-[#4A6163] hover:bg-[#FAF9F6] rounded-[4px] text-xs uppercase tracking-wider font-space"
             >
               Cancel
             </Button>
             <Button
               onClick={handleUpdate}
               disabled={updating}
-              className="bg-[image:var(--gradient-primary)] text-primary-foreground rounded-xl shadow-[var(--shadow-glow)]"
+              className="bg-[#242426] hover:bg-[#343436] text-white font-bold rounded-[4px] text-xs uppercase tracking-wider transition-all font-space shadow-sm"
             >
-              {updating ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Changes"}
+              {updating ? <Loader2 className="h-4 w-4 animate-spin text-white" /> : "Save Changes"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -678,11 +710,11 @@ function OwnerPage() {
 
       {/* OTP Dialog for Check-in */}
       <Dialog open={!!otpFor} onOpenChange={(o) => !o && setOtpFor(null)}>
-        <DialogContent className="bg-[#0a1628] border border-white/10 text-white rounded-2xl">
+        <DialogContent className="bg-white border border-[#D1D1D1] text-[#242426] rounded-[4px] max-w-sm">
           <DialogHeader>
-            <DialogTitle className="text-white">Verify Check-in OTP</DialogTitle>
+            <DialogTitle className="text-base font-bold text-[#242426] uppercase tracking-wider font-space" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Verify Check-in OTP</DialogTitle>
           </DialogHeader>
-          <p className="text-sm text-white/40">
+          <p className="text-xs text-[#4A6163]">
             Enter the 6-digit OTP provided by the user to start the session.
           </p>
           <Input
@@ -690,23 +722,23 @@ function OwnerPage() {
             onChange={(e) => setOtp(e.target.value)}
             maxLength={6}
             placeholder="000000"
-            className="text-center text-2xl tracking-[0.5em] font-mono h-14 bg-white/5 border-white/10 text-white placeholder:text-white/20"
+            className="text-center text-xl tracking-[0.5em] font-mono h-12 bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
           />
-          <DialogFooter>
+          <DialogFooter className="flex gap-2 pt-2">
             <Button
               variant="outline"
               onClick={() => setOtpFor(null)}
-              className="border-white/10 text-white/60 hover:bg-white/5"
+              className="border-[#D1D1D1] text-[#4A6163] hover:bg-[#FAF9F6] rounded-[4px] text-xs uppercase tracking-wider font-space"
             >
               Cancel
             </Button>
             <Button
               onClick={handleCheckIn}
               disabled={otp.length !== 6 || busyId === otpFor?._id}
-              className="bg-gradient-to-r from-green-600 to-green-400 text-white font-bold"
+              className="bg-[#C64F38] hover:bg-[#B53F29] text-white font-bold rounded-[4px] text-xs uppercase tracking-wider transition-all font-space shadow-sm h-10 px-4"
             >
               {busyId === otpFor?._id ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin text-white" />
               ) : (
                 "Verify & Start"
               )}
@@ -720,8 +752,8 @@ function OwnerPage() {
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="space-y-1.5">
-      <Label>{label}</Label>
+    <div className="space-y-1">
+      <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">{label}</Label>
       {children}
     </div>
   );
@@ -729,12 +761,12 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function Kpi({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="bg-card rounded-2xl p-3 shadow-[var(--shadow-card)]">
-      <div className="h-9 w-9 rounded-lg bg-accent grid place-items-center text-primary mb-2">
+    <div className="bg-white border border-[#D1D1D1] rounded-[4px] p-3 shadow-sm">
+      <div className="h-9 w-9 rounded-[4px] bg-[#FAF9F6] border border-[#D1D1D1] grid place-items-center text-[#C64F38] mb-2">
         {icon}
       </div>
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="font-bold text-lg truncate">{value}</p>
+      <p className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">{label}</p>
+      <p className="font-bold text-lg text-[#242426] truncate font-space">{value}</p>
     </div>
   );
 }

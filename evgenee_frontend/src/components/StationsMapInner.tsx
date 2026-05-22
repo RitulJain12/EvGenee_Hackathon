@@ -167,23 +167,23 @@ function StationPopupCard({
   const avgRating = station.reviews?.length
     ? (station.reviews.reduce((a, r) => a + r.rating, 0) / station.reviews.length).toFixed(1)
     : null;
-  const grad = isClosed 
-    ? "linear-gradient(135deg,#64748b,#475569)" 
-    : "linear-gradient(135deg,#22c55e,#16a34a)";
+  const bgHeader = isClosed ? "#94A3B8" : avail ? "#4A6163" : "#C64F38";
 
   return (
     <div
       style={{
         width: 258,
-        fontFamily: "system-ui,sans-serif",
-        borderRadius: 18,
+        fontFamily: "'Inter', sans-serif",
+        borderRadius: "4px",
         overflow: "hidden",
-        background: "#fff",
+        background: "#FAF9F6",
+        border: "1px solid #D1D1D1",
+        boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
       }}
     >
       <div
         style={{
-          background: grad,
+          background: bgHeader,
           padding: "12px 14px",
           display: "flex",
           alignItems: "center",
@@ -192,15 +192,16 @@ function StationPopupCard({
       >
         <div
           style={{
-            width: 40,
-            height: 40,
-            borderRadius: 10,
-            background: "rgba(255,255,255,0.2)",
+            width: 36,
+            height: 36,
+            borderRadius: "2px",
+            background: "rgba(255,255,255,0.15)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
             overflow: "hidden",
+            border: "1px solid rgba(255,255,255,0.2)",
           }}
         >
           {station.Images?.[0] ? (
@@ -212,56 +213,63 @@ function StationPopupCard({
           ) : (
             <FontAwesomeIcon
               icon={faChargingStation}
-              style={{ width: 18, height: 18, color: "white" }}
+              style={{ width: 15, height: 15, color: "white" }}
             />
           )}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <p
             style={{
-              fontWeight: 800,
-              color: "#fff",
-              fontSize: 13,
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 750,
+              color: "#ffffff",
+              fontSize: "12px",
               margin: 0,
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
+              textTransform: "uppercase",
+              letterSpacing: "0.03em",
             }}
           >
             {station.name}
           </p>
-          <p style={{ color: "rgba(255,255,255,0.75)", fontSize: 11, margin: 0, fontWeight: 600 }}>
+          <p style={{ color: "rgba(255,255,255,0.8)", fontSize: "10px", margin: 0, fontWeight: 500 }}>
             {station.address?.city} • {station.openingHours || "24/7"}
           </p>
         </div>
         <span
           style={{
-            background: avail ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.2)",
-            color: "#fff",
-            borderRadius: 20,
-            padding: "2px 8px",
-            fontSize: 10,
-            fontWeight: 700,
+            background: "#FAF9F6",
+            color: bgHeader,
+            borderRadius: "2px",
+            padding: "2px 6px",
+            fontSize: "9px",
+            fontWeight: 800,
             flexShrink: 0,
+            border: "1px solid rgba(255,255,255,0.3)",
+            textTransform: "uppercase",
+            fontFamily: "'Space Grotesk', sans-serif",
+            letterSpacing: "0.02em",
           }}
         >
-          {avail ? `${station.availablePorts} free` : station.isOpen ? "Full" : "Closed"}
+          {avail ? `${station.availablePorts} FREE` : station.isOpen ? "FULL" : "CLOSED"}
         </span>
       </div>
-      <div style={{ display: "flex", borderBottom: "1px solid #f1f5f9" }}>
+      <div style={{ display: "flex", borderBottom: "1px solid #D1D1D1", background: "#ffffff" }}>
         <div
           style={{
             flex: 1,
             padding: "8px 4px",
             textAlign: "center",
-            borderRight: "1px solid #f1f5f9",
+            borderRight: "1px solid #D1D1D1",
           }}
         >
-          <p style={{ fontWeight: 800, color: "#16a34a", fontSize: 14, margin: 0 }}>
+          <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 800, color: "#C64F38", fontSize: "13px", margin: 0 }}>
             {sym}
             {minPrice}
           </p>
-          <p style={{ color: "#94a3b8", fontSize: 10, margin: 0 }}>per kWh</p>
+          <p style={{ color: "#4A6163", fontSize: "9px", margin: 0, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>per kWh</p>
         </div>
         {avgRating && (
           <div
@@ -269,7 +277,7 @@ function StationPopupCard({
               flex: 1,
               padding: "8px 4px",
               textAlign: "center",
-              borderRight: "1px solid #f1f5f9",
+              borderRight: "1px solid #D1D1D1",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -277,29 +285,30 @@ function StationPopupCard({
           >
             <p
               style={{
+                fontFamily: "'Space Grotesk', sans-serif",
                 fontWeight: 800,
-                color: "#f59e0b",
-                fontSize: 14,
+                color: "#242426",
+                fontSize: "13px",
                 margin: 0,
                 display: "flex",
                 alignItems: "center",
                 gap: 2,
               }}
             >
-              <Star size={11} fill="#f59e0b" color="#f59e0b" />
+              <Star size={10} fill="#C64F38" color="#C64F38" />
               {avgRating}
             </p>
-            <p style={{ color: "#94a3b8", fontSize: 10, margin: 0 }}>rating</p>
+            <p style={{ color: "#4A6163", fontSize: "9px", margin: 0, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>rating</p>
           </div>
         )}
         {displayDist !== undefined && (
           <div style={{ flex: 1, padding: "8px 4px", textAlign: "center" }}>
-            <p style={{ fontWeight: 800, color: "#1e293b", fontSize: 14, margin: 0 }}>
+            <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 800, color: "#242426", fontSize: "13px", margin: 0 }}>
               {displayDist < 1
                 ? `${(displayDist * 1000).toFixed(0)}m`
                 : `${displayDist.toFixed(1)}km`}
             </p>
-            <p style={{ color: "#94a3b8", fontSize: 10, margin: 0 }}>
+            <p style={{ color: "#4A6163", fontSize: "9px", margin: 0, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em" }}>
               {roadDist !== null ? "by road" : "away"}
             </p>
           </div>
@@ -311,6 +320,7 @@ function StationPopupCard({
           display: "grid",
           gridTemplateColumns: isMyStation ? "1fr" : "1fr 1fr",
           gap: 8,
+          background: "#FAF9F6",
         }}
       >
         {isMyStation ? (
@@ -319,17 +329,21 @@ function StationPopupCard({
               navigate({ to: "/owner/stations/$stationId", params: { stationId: station._id } })
             }
             style={{
-              height: 36,
-              background: "#1e293b",
-              color: "#fff",
+              height: 32,
+              background: "#242426",
+              color: "#FAF9F6",
               border: "none",
-              borderRadius: 10,
+              borderRadius: "4px",
               fontWeight: 800,
-              fontSize: 12,
+              fontSize: "10px",
+              fontFamily: "'Space Grotesk', sans-serif",
+              textTransform: "uppercase",
+              letterSpacing: "0.04em",
               cursor: "pointer",
+              transition: "background 0.2s ease",
             }}
           >
-            View Bookings Dashboard
+            Bookings Dashboard
           </button>
         ) : (
           <>
@@ -339,14 +353,18 @@ function StationPopupCard({
                 navigate({ to: "/stations/$stationId", params: { stationId: station._id } })
               }
               style={{
-                height: 36,
-                background: station.isOpen ? grad : "#e2e8f0",
-                color: station.isOpen ? "#fff" : "#94a3b8",
+                height: 32,
+                background: station.isOpen ? "#242426" : "#EAEAEA",
+                color: station.isOpen ? "#FAF9F6" : "#94A3B8",
                 border: "none",
-                borderRadius: 10,
+                borderRadius: "4px",
                 fontWeight: 800,
-                fontSize: 12,
+                fontSize: "10px",
+                fontFamily: "'Space Grotesk', sans-serif",
+                textTransform: "uppercase",
+                letterSpacing: "0.04em",
                 cursor: station.isOpen ? "pointer" : "not-allowed",
+                transition: "background 0.2s ease",
               }}
             >
               Book Now
@@ -360,21 +378,25 @@ function StationPopupCard({
                 }
               }}
               style={{
-                height: 36,
-                border: "1.5px solid #e2e8f0",
-                borderRadius: 10,
-                background: "#fff",
-                fontSize: 12,
-                fontWeight: 600,
-                color: "#475569",
+                height: 32,
+                border: "1px solid #D1D1D1",
+                borderRadius: "4px",
+                background: "#ffffff",
+                fontSize: "10px",
+                fontFamily: "'Space Grotesk', sans-serif",
+                textTransform: "uppercase",
+                letterSpacing: "0.04em",
+                fontWeight: 800,
+                color: "#4A6163",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 4,
+                transition: "background 0.2s ease",
               }}
             >
-              <Navigation size={12} /> Directions
+              <Navigation size={10} /> Directions
             </button>
           </>
         )}
@@ -633,24 +655,24 @@ export default function StationsMapInner({
               <Polyline
                 key={`alt-${i}`}
                 positions={r.coords}
-                color="#475569"
-                weight={4}
-                opacity={0.5}
-                dashArray="8 5"
+                color="#A8A8A8"
+                weight={3}
+                opacity={0.7}
+                dashArray="6 4"
               />
             ),
         )}
 
         {selectedRoute && (
           <>
-            <Polyline positions={selectedRoute.coords} color="#000" weight={10} opacity={0.2} />
-            <Polyline positions={selectedRoute.coords} color="#3b82f6" weight={6} opacity={0.9} />
+            <Polyline positions={selectedRoute.coords} color="#242426" weight={8} opacity={0.15} />
+            <Polyline positions={selectedRoute.coords} color="#242426" weight={4} opacity={0.95} />
             <Polyline
               positions={selectedRoute.coords}
-              color="#60a5fa"
-              weight={3}
-              opacity={0.6}
-              dashArray="14 7"
+              color="#C64F38"
+              weight={2}
+              opacity={0.9}
+              dashArray="6 6"
             />
             {panelVisible && <FitRoute coords={selectedRoute.coords} />}
           </>
@@ -723,29 +745,29 @@ export default function StationsMapInner({
                   left: "50%",
                   transform: "translateX(-50%)",
                   zIndex: 99999,
-                  background: "#0a0f1a",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: 16,
-                  padding: "16px 20px",
+                  background: "#FAF9F6",
+                  border: "1px solid #D1D1D1",
+                  borderRadius: "4px",
+                  padding: "14px 18px",
                   display: "flex",
                   alignItems: "center",
-                  gap: 16,
-                  boxShadow: "0 10px 40px rgba(0,0,0,0.6)",
-                  fontFamily: "system-ui,sans-serif",
+                  gap: 14,
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                  fontFamily: "'Space Grotesk', sans-serif",
                   width: "min(90vw, 400px)",
                 }}
               >
                 <div
                   style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 12,
-                    background: "#3b82f6",
+                    width: 42,
+                    height: 42,
+                    borderRadius: "4px",
+                    background: "#242426",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    color: "#fff",
-                    fontSize: 24,
+                    color: "#FAF9F6",
+                    fontSize: 20,
                     fontWeight: 900,
                     flexShrink: 0,
                   }}
@@ -753,18 +775,19 @@ export default function StationsMapInner({
                   {stepIcon(nextStep.maneuver.type, nextStep.maneuver.modifier)}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 22, fontWeight: 900, color: "#fff", lineHeight: 1 }}>
+                  <div style={{ fontSize: 20, fontWeight: 900, color: "#242426", lineHeight: 1, fontFamily: "'Space Grotesk', sans-serif" }}>
                     {fmtDist(distToNext)}
                   </div>
                   <div
                     style={{
-                      fontSize: 16,
-                      fontWeight: 500,
-                      color: "rgba(255,255,255,0.8)",
-                      marginTop: 6,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: "#4A6163",
+                      marginTop: 4,
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      fontFamily: "'Inter', sans-serif",
                     }}
                   >
                     {stepLabel(nextStep.maneuver.type, nextStep.maneuver.modifier, nextStep.name)}
@@ -779,15 +802,15 @@ export default function StationsMapInner({
                   left: "50%",
                   transform: "translateX(-50%)",
                   zIndex: 99999,
-                  background: "#0a0f1a",
-                  border: "1px solid rgba(59,130,246,0.35)",
-                  borderRadius: 50,
-                  padding: "10px 20px",
+                  background: "#FAF9F6",
+                  border: "1px solid #D1D1D1",
+                  borderRadius: "4px",
+                  padding: "8px 16px",
                   display: "flex",
                   alignItems: "center",
-                  gap: 14,
-                  boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
-                  fontFamily: "system-ui,sans-serif",
+                  gap: 12,
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                  fontFamily: "'Space Grotesk', sans-serif",
                   whiteSpace: "nowrap",
                   width: "max-content",
                   maxWidth: "calc(100vw - 24px)",
@@ -795,19 +818,19 @@ export default function StationsMapInner({
               >
                 <div
                   style={{
-                    width: 8,
-                    height: 8,
+                    width: 7,
+                    height: 7,
                     borderRadius: "50%",
-                    background: "#3b82f6",
+                    background: "#C64F38",
                     flexShrink: 0,
                   }}
                 />
-                <span style={{ fontSize: 13, fontWeight: 800, color: "#fff" }}>
+                <span style={{ fontSize: 13, fontWeight: 800, color: "#242426" }}>
                   {selectedRoute.durationMin < 60
                     ? `${selectedRoute.durationMin} min`
                     : `${Math.floor(selectedRoute.durationMin / 60)}h ${selectedRoute.durationMin % 60}m`}
                 </span>
-                <span style={{ fontSize: 12, color: "rgba(255,255,255,0.45)" }}>
+                <span style={{ fontSize: 11, color: "#4A6163", fontFamily: "'Inter', sans-serif" }}>
                   {selectedRoute.distanceKm < 1
                     ? `${(selectedRoute.distanceKm * 1000).toFixed(0)} m`
                     : `${selectedRoute.distanceKm.toFixed(1)} km`}
@@ -815,14 +838,16 @@ export default function StationsMapInner({
                 <button
                   onClick={() => setPanelVisible(true)}
                   style={{
-                    background: "rgba(59,130,246,0.15)",
-                    border: "1px solid rgba(59,130,246,0.3)",
-                    borderRadius: 20,
-                    padding: "3px 10px",
+                    background: "#ffffff",
+                    border: "1px solid #D1D1D1",
+                    borderRadius: "2px",
+                    padding: "3px 8px",
                     cursor: "pointer",
-                    color: "#3b82f6",
-                    fontSize: 11,
+                    color: "#4A6163",
+                    fontSize: 10,
                     fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.04em",
                   }}
                 >
                   Details
@@ -830,14 +855,16 @@ export default function StationsMapInner({
                 <button
                   onClick={clearRoute}
                   style={{
-                    background: "rgba(255,255,255,0.06)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: 20,
-                    padding: "3px 10px",
+                    background: "#C64F38",
+                    border: "none",
+                    borderRadius: "2px",
+                    padding: "4px 9px",
                     cursor: "pointer",
-                    color: "rgba(255,255,255,0.5)",
-                    fontSize: 11,
-                    fontWeight: 600,
+                    color: "#ffffff",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.04em",
                   }}
                 >
                   ✕ End

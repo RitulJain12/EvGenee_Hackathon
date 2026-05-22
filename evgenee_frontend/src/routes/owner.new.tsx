@@ -131,25 +131,40 @@ function NewStation() {
 
   return (
     <div
-      className="max-w-2xl mx-auto p-4 pb-8"
-      style={{ paddingTop: "calc(var(--safe-top) + 1.5rem)" }}
+      className="max-w-2xl mx-auto p-4 pb-8 relative min-h-screen"
+      style={{
+        fontFamily: "'Inter', sans-serif",
+        paddingTop: "calc(var(--safe-top) + 2rem)",
+      }}
     >
+      {/* Project Texture */}
+      <div
+        className="fixed inset-0 z-0 pointer-events-none opacity-[0.03]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "128px 128px",
+        }}
+      />
+
       <button
         onClick={() => nav({ to: "/owner" })}
-        className="mb-4 flex items-center gap-1 text-sm font-semibold text-white/60 hover:text-white transition-colors"
+        className="mb-4 flex items-center gap-1.5 text-[10px] font-bold text-[#4A6163] hover:text-[#242426] font-space uppercase tracking-wider transition-colors relative z-10"
+        style={{ fontFamily: "'Space Grotesk', sans-serif" }}
       >
         <ArrowLeft className="h-4 w-4" />
         Back
       </button>
-      <h1 className="text-2xl font-black text-white mb-4">Add Station</h1>
+      <h1 className="text-2xl font-bold text-[#242426] font-space uppercase tracking-tight mb-5 relative z-10" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Add Station</h1>
 
-      <form onSubmit={submit} className="space-y-4">
-        <Section title="Basic">
+      <form onSubmit={submit} className="space-y-5 relative z-10">
+        <Section title="Basic Info">
           <Field label="Name">
             <Input
               required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-10 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
             />
           </Field>
           <Field label="Operator">
@@ -157,6 +172,7 @@ function NewStation() {
               required
               value={form.operator}
               onChange={(e) => setForm({ ...form, operator: e.target.value })}
+              className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-10 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
             />
           </Field>
           <Field label="Image URLs (comma separated)">
@@ -166,12 +182,13 @@ function NewStation() {
               value={form.image}
               onChange={(e) => setForm({ ...form, image: e.target.value })}
               placeholder="https://img1.com, https://img2.com"
+              className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-10 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
             />
           </Field>
 
-          <div className="flex items-center justify-between py-2">
+          <div className="flex items-center justify-between py-1">
             <Label
-              className="cursor-pointer"
+              className="cursor-pointer text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space"
               onClick={() => setForm({ ...form, isOpen: !form.isOpen })}
             >
               Station initially open
@@ -179,6 +196,7 @@ function NewStation() {
             <Switch
               checked={form.isOpen}
               onCheckedChange={(c) => setForm({ ...form, isOpen: c })}
+              className="data-[state=checked]:bg-[#0F9F59] data-[state=unchecked]:bg-[#D1D1D1]"
             />
           </div>
         </Section>
@@ -189,6 +207,7 @@ function NewStation() {
               required
               value={form.street}
               onChange={(e) => setForm({ ...form, street: e.target.value })}
+              className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-10 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
             />
           </Field>
           <div className="grid grid-cols-2 gap-2">
@@ -197,6 +216,7 @@ function NewStation() {
                 required
                 value={form.city}
                 onChange={(e) => setForm({ ...form, city: e.target.value })}
+                className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-10 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
               />
             </Field>
             <Field label="State">
@@ -204,6 +224,7 @@ function NewStation() {
                 required
                 value={form.state}
                 onChange={(e) => setForm({ ...form, state: e.target.value })}
+                className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-10 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
               />
             </Field>
           </div>
@@ -213,6 +234,7 @@ function NewStation() {
                 required
                 value={form.country}
                 onChange={(e) => setForm({ ...form, country: e.target.value })}
+                className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-10 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
               />
             </Field>
             <Field label="Postal Code">
@@ -220,11 +242,12 @@ function NewStation() {
                 required
                 value={form.postalCode}
                 onChange={(e) => setForm({ ...form, postalCode: e.target.value })}
+                className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-10 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
               />
             </Field>
           </div>
           <div className="pt-2">
-            <Label className="block mb-2">Pin on Map</Label>
+            <Label className="text-[10px] font-bold text-[#4A6163] block mb-2 uppercase tracking-wider font-space">Pin on Map</Label>
             <LocationPicker
               lat={parseFloat(form.lat) || 0}
               lng={parseFloat(form.lng) || 0}
@@ -233,10 +256,15 @@ function NewStation() {
               }
             />
             {(!form.lat || !form.lng) && (
-              <p className="text-xs text-destructive mt-1">Please set a location on the map</p>
+              <p className="text-[10px] font-bold text-[#C64F38] mt-1 font-space uppercase">Please set a location on the map</p>
             )}
           </div>
-          <Button type="button" variant="outline" onClick={useMyLocation} className="w-full">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={useMyLocation}
+            className="w-full border-[#D1D1D1] text-[#4A6163] hover:bg-[#FAF9F6] rounded-[4px] text-xs uppercase tracking-wider font-space h-10 transition-colors"
+          >
             Use my current location
           </Button>
         </Section>
@@ -249,6 +277,7 @@ function NewStation() {
                 required
                 value={form.totalPorts}
                 onChange={(e) => setForm({ ...form, totalPorts: e.target.value })}
+                className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-10 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
               />
             </Field>
             <Field label="Available">
@@ -257,6 +286,7 @@ function NewStation() {
                 required
                 value={form.availablePorts}
                 onChange={(e) => setForm({ ...form, availablePorts: e.target.value })}
+                className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-10 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
               />
             </Field>
             <Field label="Speed (kW)">
@@ -265,6 +295,7 @@ function NewStation() {
                 required
                 value={form.chargingSpeed}
                 onChange={(e) => setForm({ ...form, chargingSpeed: e.target.value })}
+                className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-10 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
               />
             </Field>
           </div>
@@ -273,16 +304,17 @@ function NewStation() {
               required
               value={form.openingHours}
               onChange={(e) => setForm({ ...form, openingHours: e.target.value })}
+              className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-10 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
             />
           </Field>
         </Section>
 
         <Section title="Connectors & Pricing">
-          <Label className="block mb-2">Connectors</Label>
+          <Label className="text-[10px] font-bold text-[#4A6163] block mb-2 uppercase tracking-wider font-space">Connectors</Label>
           {connectors.map((c, i) => (
             <div key={i} className="flex gap-2">
               <select
-                className="flex-1 border border-input rounded-md px-3 h-10 bg-background"
+                className="flex-1 bg-[#FAF9F6] border border-[#D1D1D1] text-[#242426] text-xs h-10 rounded-[4px] px-3 focus:outline-none focus:border-[#C64F38]"
                 value={c.type}
                 onChange={(e) =>
                   setConnectors(
@@ -295,7 +327,7 @@ function NewStation() {
                 ))}
               </select>
               <Input
-                className="flex-1"
+                className="flex-1 bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] rounded-[4px] h-10 text-sm focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
                 type="number"
                 placeholder="Price/kWh"
                 value={c.price}
@@ -310,6 +342,7 @@ function NewStation() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setConnectors(connectors.filter((_, idx) => idx !== i))}
+                className="text-[#4A6163] hover:text-[#C64F38] h-10 w-10 hover:bg-[#FAF9F6] rounded-[4px]"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -320,6 +353,7 @@ function NewStation() {
             variant="outline"
             size="sm"
             onClick={() => setConnectors([...connectors, { type: "Type2", price: "10" }])}
+            className="border-[#D1D1D1] text-[#4A6163] hover:bg-[#FAF9F6] rounded-[4px] text-[10px] uppercase font-bold tracking-wider font-space h-9 self-start"
           >
             <Plus className="h-3.5 w-3.5 mr-1" />
             Add connector
@@ -333,6 +367,7 @@ function NewStation() {
                 required
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-10 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
               />
             </Field>
             <Field label="Email">
@@ -341,6 +376,7 @@ function NewStation() {
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-10 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
               />
             </Field>
           </div>
@@ -348,6 +384,7 @@ function NewStation() {
             <Input
               value={form.amenities}
               onChange={(e) => setForm({ ...form, amenities: e.target.value })}
+              className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-10 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
             />
           </Field>
         </Section>
@@ -355,9 +392,9 @@ function NewStation() {
         <Button
           type="submit"
           disabled={submitting}
-          className="w-full h-12 bg-[image:var(--gradient-primary)] text-primary-foreground shadow-[var(--shadow-glow)] font-semibold"
+          className="w-full h-11 bg-[#242426] hover:bg-[#343436] text-white font-bold rounded-[4px] text-xs uppercase tracking-wider transition-all font-space shadow-sm flex items-center justify-center"
         >
-          {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : "Create Station"}
+          {submitting ? <Loader2 className="h-4 w-4 animate-spin text-white" /> : "Create Station"}
         </Button>
       </form>
     </div>
@@ -366,16 +403,16 @@ function NewStation() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-card rounded-2xl p-4 shadow-[var(--shadow-card)] space-y-3">
-      <h3 className="font-bold text-sm text-primary">{title}</h3>
+    <div className="bg-white border border-[#D1D1D1] rounded-[4px] p-5 shadow-sm space-y-4">
+      <h3 className="font-bold text-xs text-[#C64F38] uppercase tracking-wider font-space" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{title}</h3>
       {children}
     </div>
   );
 }
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="space-y-1.5">
-      <Label>{label}</Label>
+    <div className="space-y-1">
+      <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space ml-1">{label}</Label>
       {children}
     </div>
   );

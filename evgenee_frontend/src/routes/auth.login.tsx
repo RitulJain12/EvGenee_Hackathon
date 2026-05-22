@@ -44,22 +44,12 @@ function LoginPage() {
 
   return (
     <div
-      className="min-h-screen bg-[#000814] flex flex-col items-center justify-center p-6 overflow-hidden relative"
-      style={{ fontFamily: "'DM Sans', sans-serif" }}
+      className="min-h-screen bg-[#FAF9F6] flex flex-col items-center justify-center p-6 overflow-hidden relative"
+      style={{ fontFamily: "'Inter', sans-serif" }}
     >
-      {/* Premium Background Image */}
-      <div className="fixed inset-0 z-0">
-        <img
-          src="/hero-bg.png"
-          alt="EV Charging"
-          className="w-full h-full object-cover opacity-40"
-        />
-        <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-[2px]" />
-      </div>
-
       {/* Project Texture */}
       <div
-        className="fixed inset-0 z-10 pointer-events-none opacity-[0.05]"
+        className="fixed inset-0 z-10 pointer-events-none opacity-[0.03]"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
           backgroundRepeat: "repeat",
@@ -71,36 +61,36 @@ function LoginPage() {
       <div
         className="fixed top-0 left-0 w-[600px] h-[500px] pointer-events-none z-10"
         style={{
-          background: "radial-gradient(ellipse at 0% 0%, rgba(59,130,246,0.15) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse at 0% 0%, rgba(198,79,56,0.05) 0%, transparent 70%)",
         }}
       />
       <div
         className="fixed bottom-0 right-0 w-[500px] h-[500px] pointer-events-none z-10"
         style={{
-          background: "radial-gradient(ellipse at 100% 100%, rgba(16,185,129,0.1) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse at 100% 100%, rgba(74,97,99,0.05) 0%, transparent 70%)",
         }}
       />
 
       <div className="w-full max-w-sm relative z-10">
         {/* Header */}
-        <div className="text-center mb-10">
-          <div className="inline-flex h-16 w-16 rounded-2xl bg-gradient-to-br from-green-600 to-green-400 items-center justify-center mb-5 shadow-lg shadow-green-500/20">
-            <FontAwesomeIcon icon={faChargingStation} className="h-8 w-8 text-white" />
+        <div className="text-center mb-8">
+          <div className="inline-flex h-14 w-14 rounded-[4px] bg-white border border-[#D1D1D1] items-center justify-center mb-4 shadow-sm">
+            <FontAwesomeIcon icon={faChargingStation} className="h-6 w-6 text-[#C64F38]" />
           </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
+          <h1 className="text-2xl font-bold text-[#242426] tracking-tight uppercase font-space mb-1.5" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
             EvGenee
           </h1>
-          <p className="text-white/40 text-sm">Welcome back. Sign in to your account.</p>
+          <p className="text-[#4A6163] text-[10px] font-bold uppercase tracking-wider font-space">Welcome back. Sign in to your account.</p>
         </div>
 
         {/* Form Card */}
         <form
           onSubmit={submit}
-          className="bg-white/[0.03] backdrop-blur-xl border border-white/8 rounded-[2rem] p-8 space-y-6 shadow-2xl"
+          className="bg-white border border-[#D1D1D1] rounded-[4px] p-8 space-y-5 shadow-sm"
         >
           <div className="space-y-4">
-            <div className="space-y-2">
-              <Label className="text-[10px] font-bold text-white/30 uppercase tracking-[0.15em] ml-1">Email Address</Label>
+            <div className="space-y-1.5">
+              <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space ml-1">Email Address</Label>
               <Input
                 id="email"
                 type="email"
@@ -108,16 +98,16 @@ function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@email.com"
-                className="bg-white/5 border-white/10 text-white placeholder:text-white/20 h-12 rounded-xl focus:ring-green-500/20"
+                className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-11 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38]"
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <div className="flex items-center justify-between ml-1">
-                <Label className="text-[10px] font-bold text-white/30 uppercase tracking-[0.15em]">Password</Label>
+                <Label className="text-[10px] font-bold text-[#4A6163] uppercase tracking-wider font-space">Password</Label>
                 <Link
                   to="/auth/forgot-password"
-                  className="text-[10px] font-bold text-green-400 hover:text-green-300 uppercase tracking-widest transition-colors"
+                  className="text-[10px] font-bold text-[#C64F38] hover:text-[#B53F29] uppercase tracking-wider transition-colors font-space"
                 >
                   Forgot?
                 </Link>
@@ -130,12 +120,12 @@ function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/20 h-12 rounded-xl focus:ring-green-500/20 pr-12"
+                  className="bg-[#FAF9F6] border-[#D1D1D1] text-[#242426] placeholder:text-[#4A6163]/30 h-11 text-sm rounded-[4px] focus-visible:ring-0 focus-visible:border-[#C64F38] focus:border-[#C64F38] pr-12"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#4A6163]/60 hover:text-[#242426] transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -146,14 +136,14 @@ function LoginPage() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full h-12 bg-green-500 hover:bg-green-400 text-black font-bold rounded-full text-base transition-all shadow-lg shadow-green-500/20 active:scale-[0.98]"
+            className="w-full h-11 bg-[#242426] hover:bg-[#343436] text-white font-bold rounded-[4px] text-xs uppercase tracking-wider transition-all font-space shadow-sm active:scale-[0.98] flex items-center justify-center"
           >
-            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Sign In"}
+            {loading ? <Loader2 className="h-4 w-4 animate-spin text-white" /> : "Sign In"}
           </Button>
 
-          <p className="text-center text-sm text-white/30">
+          <p className="text-center text-xs font-medium text-[#4A6163]">
             Don't have an account?{" "}
-            <Link to="/auth/register" className="text-white font-bold hover:text-green-400 transition-colors">
+            <Link to="/auth/register" className="text-[#C64F38] font-bold hover:text-[#B53F29] transition-colors font-space uppercase text-[10px] ml-0.5 tracking-wider">
               Create one
             </Link>
           </p>

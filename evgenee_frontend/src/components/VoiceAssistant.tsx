@@ -25,6 +25,7 @@ export function VoiceAssistant() {
   const [transcript, setTranscript] = useState("");
   const [response, setResponse] = useState("");
   const [stations, setStations] = useState<any[]>([]);
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const threadIdRef = useRef<string | undefined>(undefined);
 
@@ -98,17 +99,47 @@ export function VoiceAssistant() {
     };
   }, [isAuthed, navigate]);
 
+  useEffect(() => {
+    if (!isAuthed) return;
+
+    const storedLocation = sessionStorage.getItem("userLocation");
+    if (storedLocation) {
+      try {
+        setUserLocation(JSON.parse(storedLocation));
+      } catch {
+        sessionStorage.removeItem("userLocation");
+      }
+    } else if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const loc: [number, number] = [position.coords.latitude, position.coords.longitude];
+          setUserLocation(loc);
+          sessionStorage.setItem("userLocation", JSON.stringify(loc));
+        },
+        () => {
+          // location permission denied or unavailable
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 },
+      );
+    }
+  }, [isAuthed]);
+
   const processVoiceInput = (text: string) => {
     if (!text.trim()) return;
 
     setIsProcessing(true);
     setResponse("");
 
-    // Emit over socket instead of REST API
-    socket.emit("ai:voice_chat", {
+    const payload: any = {
       message: text,
       threadId: threadIdRef.current,
-    });
+    };
+
+    if (userLocation) {
+      payload.location = { lat: userLocation[0], lng: userLocation[1] };
+    }
+
+    socket.emit("ai:voice_chat", payload);
   };
 
   const speakResponse = (text: string) => {
@@ -179,109 +210,147 @@ export function VoiceAssistant() {
   if (!isAuthed || !isAllowedPath || isOwner) return null;
 
   return (
-    <div className="fixed bottom-32 right-4 md:bottom-32 md:right-8 z-[999] flex flex-col items-end gap-3 sm:gap-4">
+    <div className="fixed bottom-32 right-4 md:bottom-32 md:right-8 z-[999] flex flex-col items-end gap-3 sm:gap-4 font-sans text-xs">
+      <style>{`
+        @keyframes voiceWave {
+          0%, 100% { height: 6px; transform: scaleY(1); }
+          50% { height: 24px; transform: scaleY(1.5); }
+        }
+        .voice-bar {
+          width: 3px;
+          border-radius: 1px;
+          background-color: #C64F38;
+          display: inline-block;
+        }
+        .voice-bar:nth-child(1) { animation: voiceWave 1.2s ease-in-out infinite; }
+        .voice-bar:nth-child(2) { animation: voiceWave 1.2s ease-in-out infinite 0.15s; }
+        .voice-bar:nth-child(3) { animation: voiceWave 1.2s ease-in-out infinite 0.3s; }
+        .voice-bar:nth-child(4) { animation: voiceWave 1.2s ease-in-out infinite 0.45s; }
+        .voice-bar:nth-child(5) { animation: voiceWave 1.2s ease-in-out infinite 0.6s; }
+      `}</style>
+
       {isOpen && (
-        <div className="bg-white/85 dark:bg-zinc-900/85 backdrop-blur-2xl border border-white/40 dark:border-zinc-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.12)] rounded-3xl p-5 w-[calc(100vw-2rem)] sm:w-[360px] animate-in slide-in-from-bottom-8 fade-in duration-500">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-bold text-base flex items-center gap-3 bg-gradient-to-r from-green-600 to-emerald-400 bg-clip-text text-transparent">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+        <div className="bg-[#FAF9F6] border border-[#D1D1D1] shadow-[0_8px_32px_rgba(0,0,0,0.06)] rounded-[4px] p-5 w-[calc(100vw-2rem)] sm:w-[360px] animate-in slide-in-from-bottom-8 fade-in duration-300 relative overflow-hidden">
+          {/* Subtle noise pattern overlay */}
+          <div
+            className="absolute inset-0 z-0 pointer-events-none opacity-[0.02]"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+              backgroundRepeat: "repeat",
+              backgroundSize: "128px 128px",
+            }}
+          />
+
+          <div className="relative z-10 flex justify-between items-center mb-4 pb-2 border-b border-[#EAEAEA]">
+            <h3 className="font-bold text-xs flex items-center gap-2 text-[#242426] tracking-wider uppercase font-space" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C64F38] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C64F38]"></span>
               </span>
-              EvGenee AI
+              EvGenee AI Assistant
             </h3>
             <div className="flex items-center gap-2">
               {isSpeaking && (
                 <button
                   onClick={stopAudio}
                   title="Stop Audio"
-                  className="text-red-500 hover:text-white hover:bg-red-500 p-2 rounded-full bg-red-50 dark:bg-red-900/20 transition-all duration-300 shadow-sm"
+                  className="text-[#C64F38] hover:text-[#FAF9F6] hover:bg-[#C64F38] p-1.5 rounded-[4px] bg-[#FBE8E4] border border-[#FBDED9] transition-all duration-200"
                 >
-                  <VolumeX className="w-4 h-4" />
+                  <VolumeX className="w-3.5 h-3.5" />
                 </button>
               )}
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-100 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 h-8 w-8 flex items-center justify-center rounded-full transition-all duration-300 shadow-sm"
+                className="text-[#4A6163] hover:text-[#242426] bg-[#FAF9F6] hover:bg-[#EAEAEA] border border-[#D1D1D1] h-6 w-6 flex items-center justify-center rounded-[4px] transition-all duration-200"
               >
                 &times;
               </button>
             </div>
           </div>
 
-          <div className="h-[280px] overflow-y-auto flex flex-col gap-4 text-sm pr-1">
+          <div className="h-[280px] overflow-y-auto flex flex-col gap-4 text-xs pr-1 relative z-10">
+            {userLocation && (
+              <div className="self-start bg-[#EAF3F2] text-[#235047] border border-[#CFE5DE] rounded-[4px] px-3.5 py-2 max-w-[95%] text-[10px] font-medium">
+                Using your current location for nearby station searches.
+              </div>
+            )}
             {transcript && (
-              <div className="self-end bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[85%] shadow-md">
+              <div className="self-end bg-[#FBE8E4] text-[#5B1F13] border border-[#FBDED9] rounded-[4px] px-3.5 py-2 max-w-[85%] font-medium">
                 {transcript}
               </div>
             )}
 
             {isProcessing && (
-              <div className="self-start bg-white/90 dark:bg-zinc-800/90 backdrop-blur-md text-zinc-600 dark:text-zinc-300 rounded-2xl rounded-tl-sm px-5 py-3 flex items-center gap-3 shadow-sm border border-zinc-200/50 dark:border-zinc-700/50">
-                <div className="flex gap-1.5">
-                  <span
-                    className="w-2 h-2 bg-green-500 rounded-full animate-bounce"
-                    style={{ animationDelay: "0ms" }}
-                  ></span>
-                  <span
-                    className="w-2 h-2 bg-green-500 rounded-full animate-bounce"
-                    style={{ animationDelay: "150ms" }}
-                  ></span>
-                  <span
-                    className="w-2 h-2 bg-green-500 rounded-full animate-bounce"
-                    style={{ animationDelay: "300ms" }}
-                  ></span>
+              <div className="self-start bg-white text-[#4A6163] rounded-[4px] px-4 py-2 flex items-center gap-2.5 border border-[#D1D1D1]">
+                <div className="flex items-center gap-1">
+                  <div className="w-1.5 h-1.5 bg-[#4A6163] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <div className="w-1.5 h-1.5 bg-[#4A6163] rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <div className="w-1.5 h-1.5 bg-[#4A6163] rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                 </div>
-                <span className="font-medium">Thinking...</span>
+                <span className="font-bold uppercase tracking-wider text-[9px] font-space">Thinking...</span>
               </div>
             )}
 
             {response && !isProcessing && (
-              <div className="self-start bg-white/90 dark:bg-zinc-800/90 backdrop-blur-md text-zinc-800 dark:text-zinc-200 rounded-2xl rounded-tl-sm px-5 py-3.5 max-w-[95%] shadow-sm border border-zinc-200/50 dark:border-zinc-700/50 leading-relaxed font-medium">
+              <div className="self-start bg-white text-[#242426] rounded-[4px] px-4 py-3 max-w-[95%] border border-[#D1D1D1] leading-relaxed font-medium">
                 {response}
               </div>
             )}
 
             {stations.length > 0 && (
               <div className="space-y-3 mt-3">
+                <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.22em] font-bold text-[#4A6163]">
+                  <span>Nearby station results</span>
+                  {userLocation ? <span className="text-[#235047]">Using current location</span> : null}
+                </div>
                 {stations.map((st) => (
                   <div
                     key={st.id}
-                    className={`bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border-l-4 ${st.isCompatible ? "border-l-green-500 shadow-lg shadow-green-500/10" : st.isOpen ? "border-l-zinc-300 dark:border-l-zinc-700 shadow-md" : "border-l-red-400 opacity-80 shadow-sm"} rounded-r-2xl rounded-l-sm p-4 transition-all hover:-translate-y-0.5 duration-300`}
+                    className={`bg-white border-l-4 ${
+                      st.isCompatible
+                        ? "border-l-[#4A6163] border-y border-r border-[#D1D1D1]"
+                        : st.isOpen
+                        ? "border-l-[#242426] border-y border-r border-[#D1D1D1]"
+                        : "border-l-[#C64F38] border-y border-r border-[#D1D1D1] opacity-80"
+                    } rounded-[4px] p-4 transition-all hover:bg-[#FAF9F6] duration-200`}
                   >
-                    <div className="flex justify-between items-start mb-2">
-                      <p className="font-bold text-[15px] text-zinc-800 dark:text-zinc-100">
+                    <div className="flex justify-between items-start mb-1.5">
+                      <p className="font-bold text-xs text-[#242426] font-space uppercase" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
                         {st.name}
                       </p>
                       {st.isOpen ? (
-                        <span className="text-[10px] bg-green-100/80 text-green-700 dark:bg-green-900/40 dark:text-green-400 px-2.5 py-1 rounded-full font-bold shadow-sm">
+                        <span className="text-[9px] bg-[#E0EAEB] text-[#192829] px-2 py-0.5 rounded-[4px] border border-[#C6DCDD] font-bold tracking-wider font-space">
                           {st.availablePorts}/{st.totalPorts} Ports
                         </span>
                       ) : (
-                        <span className="text-[10px] bg-red-100/80 text-red-700 dark:bg-red-900/40 dark:text-red-400 px-2.5 py-1 rounded-full font-bold shadow-sm">
+                        <span className="text-[9px] bg-[#FBE8E4] text-[#C64F38] px-2 py-0.5 rounded-[4px] border border-[#FBDED9] font-bold tracking-wider font-space">
                           CLOSED
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-3 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-600"></span>{" "}
+                    <p className="text-[10px] text-[#4A6163] mb-3 flex items-center gap-1.5">
+                      <span className="w-1 h-1 rounded-full bg-[#D1D1D1]"></span>{" "}
                       {st.city}
                     </p>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5">
                       {st.chargerTypes.map((type: string) => (
                         <span
                           key={type}
-                          className={`text-[10px] font-semibold tracking-wide ${st.isCompatible ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800/50 text-green-700 dark:text-green-400" : "bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400"} px-2 py-1 rounded-md border shadow-sm`}
+                          className={`text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-[4px] border ${
+                            st.isCompatible
+                              ? "bg-[#E0EAEB] border-[#C6DCDD] text-[#192829]"
+                              : "bg-white border-[#D1D1D1] text-[#4A6163]"
+                          } font-space`}
                         >
                           {type}
                         </span>
                       ))}
                     </div>
-                    <div className="mt-3 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex justify-between items-center text-xs">
-                      <span className="text-zinc-600 dark:text-zinc-400 font-medium flex items-center gap-1.5">
+                    <div className="mt-3 pt-3 border-t border-[#EAEAEA] flex justify-between items-center text-[10px]">
+                      <span className="text-[#4A6163] font-bold uppercase tracking-wider font-space">
                         ⚡ {st.chargingSpeed} kW Fast
                       </span>
-                      <span className="font-bold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-md">
+                      <span className="font-bold text-[#C64F38] bg-[#FBE8E4] border border-[#FBDED9] px-2 py-0.5 rounded-[4px] font-space">
                         ₹{st.pricing?.[0]?.priceperKWh || 0}/kWh
                       </span>
                     </div>
@@ -291,17 +360,27 @@ export function VoiceAssistant() {
             )}
 
             {!transcript && !isProcessing && !response && (
-              <div className="h-full flex flex-col items-center justify-center text-zinc-400 text-center px-4 animate-in fade-in duration-700">
-                <div className="w-16 h-16 mb-4 rounded-full bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/10 flex items-center justify-center text-green-500 shadow-inner">
-                  <Mic className="w-8 h-8" />
+              <div className="h-full flex flex-col items-center justify-center text-[#4A6163] text-center px-4 animate-in fade-in duration-300">
+                <div className="w-12 h-12 mb-3 rounded-[4px] bg-[#E0EAEB] border border-[#C6DCDD] flex items-center justify-center text-[#4A6163]">
+                  {isListening ? (
+                    <div className="flex items-end gap-1 h-6">
+                      <span className="voice-bar" />
+                      <span className="voice-bar" />
+                      <span className="voice-bar" />
+                      <span className="voice-bar" />
+                      <span className="voice-bar" />
+                    </div>
+                  ) : (
+                    <Mic className="w-5 h-5 text-[#4A6163]" />
+                  )}
                 </div>
-                <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                  {isListening ? "I'm listening..." : "How can I help you today?"}
+                <p className="text-xs font-bold text-[#242426] mb-1 font-space uppercase tracking-wider">
+                  {isListening ? "Voice Protocol Active" : "Editorial AI Assistance"}
                 </p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-500">
+                <p className="text-[10px] text-[#4A6163]/70 font-medium">
                   {isListening
-                    ? "Speak clearly into your microphone."
-                    : "Tap the mic and say e.g. 'Find a station in Delhi'."}
+                    ? "Speak standard query commands..."
+                    : "Tap mic and speak, e.g. 'Find a fast charging terminal'"}
                 </p>
               </div>
             )}
@@ -310,30 +389,30 @@ export function VoiceAssistant() {
       )}
 
       {/* Premium Mic Button & Label */}
-      <div className="flex flex-col items-center gap-2 group">
+      <div className="flex flex-col items-center gap-1.5 group relative z-10">
         <button
           onClick={toggleListening}
-          className={`relative w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:-translate-y-1 shadow-[0_8px_30px_rgba(0,0,0,0.3)] border border-white/10 backdrop-blur-xl ${
+          className={`relative w-12 h-12 rounded-[4px] border flex items-center justify-center transition-all duration-300 hover:-translate-y-0.5 shadow-[0_4px_12px_rgba(0,0,0,0.06)] ${
             isListening
-              ? "bg-gradient-to-br from-red-500 to-rose-600 text-white"
-              : "bg-[#000814]/90 text-[#22c55e]"
+              ? "bg-[#C64F38] border-[#C64F38] text-white"
+              : "bg-[#242426] border-[#242426] text-white hover:bg-[#343436]"
           }`}
         >
           {isListening && (
-            <span className="absolute inset-0 rounded-full animate-ping bg-red-400 opacity-40"></span>
+            <span className="absolute inset-0 rounded-[4px] animate-ping bg-[#C64F38]/20 opacity-70"></span>
           )}
           {isListening ? (
-            <MicOff className="w-6 h-6 relative z-10" />
+            <MicOff className="w-5 h-5 relative z-10" />
           ) : (
-            <Mic className="w-6 h-6 relative z-10 group-hover:scale-110 transition-transform duration-300" />
+            <Mic className="w-5 h-5 relative z-10 group-hover:scale-105 transition-transform duration-300" />
           )}
         </button>
 
         <span
-          className="text-[9px] font-black tracking-[0.3em] uppercase text-zinc-600 transition-all duration-500 group-hover:tracking-[0.4em] group-hover:text-[#22c55e] opacity-80"
-          style={{ fontFamily: "'Syne', sans-serif" }}
+          className="text-[8px] font-bold tracking-[0.25em] uppercase text-[#4A6163] transition-all duration-300 group-hover:text-[#C64F38]"
+          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
         >
-          Fastrack
+          {isListening ? "LISTENING" : "AI VOICE"}
         </span>
       </div>
     </div>

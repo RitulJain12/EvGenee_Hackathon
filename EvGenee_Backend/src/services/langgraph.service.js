@@ -25,6 +25,20 @@ async function geocodeLocation(locationStr) {
     return null;
   }
 }
+
+async function reverseGeocodeLocation(coords) {
+  try {
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${coords.lat}&lon=${coords.lng}&format=json`;
+    const response = await axios.get(url, { headers: { "User-Agent": "EvGenee_Bot" } });
+    if (response.data && response.data.display_name) {
+      return response.data.display_name;
+    }
+    return null;
+  } catch (err) {
+    console.error("Reverse geocoding error:", err.message);
+    return null;
+  }
+}
 async function getRoadDistance(startCoords, endCoords) {
   try {
     const url = `http://router.project-osrm.org/route/v1/driving/${startCoords[0]},${startCoords[1]};${endCoords[0]},${endCoords[1]}?overview=false`;
@@ -134,11 +148,57 @@ const isOverlapping = (startA, endA, startB, endB) => {
   return sA < eB && sB < eA;
 };
 
-const findBestStationTool = tool(
+const createFindBestStationTool = (userInfo, userLocation) => tool(
   async ({ location, date, startTime, endTime, chargerType }) => {
     try {
-      const coords = await geocodeLocation(location);
-      if (!coords) return JSON.stringify({ error: `I couldn't locate "${location}" on the map. Could you specify a more precise city or area?` });
+      let coords = null;
+      let locationName = location || "";
+
+      // Check if location was provided and check if it's coordinates or a string
+      if (locationName && locationName.trim()) {
+        const coordsRegex = /^(-?\d+(\.\d+)?)\s*,\s*(-?\d+(\.\d+)?)$/;
+        const match = locationName.trim().match(coordsRegex);
+        if (match) {
+          const lat = parseFloat(match[1]);
+          const lng = parseFloat(match[3]);
+          coords = [lng, lat];
+        } else {
+          coords = await geocodeLocation(locationName);
+        }
+      }
+
+      // Fallback 1: Use userLocation if provided from socket
+      if (!coords && userLocation && typeof userLocation.lat === 'number' && typeof userLocation.lng === 'number') {
+        coords = [userLocation.lng, userLocation.lat];
+        const address = await reverseGeocodeLocation(userLocation).catch(() => null);
+        locationName = address || "your current location";
+      }
+
+      // Fallback 2: Past bookings
+      if (!coords && userInfo && userInfo.userId) {
+        const lastBooking = await Booking.findOne({ user: userInfo.userId })
+          .sort({ createdAt: -1 })
+          .populate('station');
+        if (lastBooking && lastBooking.station && lastBooking.station.location) {
+          coords = lastBooking.station.location.coordinates;
+          locationName = lastBooking.station.address?.city || lastBooking.station.name || "your last booking location";
+        }
+      }
+
+      // Fallback 3: First available station
+      if (!coords) {
+        const anyStation = await Station.findOne();
+        if (anyStation && anyStation.location) {
+          coords = anyStation.location.coordinates;
+          locationName = anyStation.address?.city || anyStation.name || "default location";
+        }
+      }
+
+      // Fallback 4: Hardcoded Bhopal
+      if (!coords) {
+        coords = [77.4126, 23.2599]; // [longitude, latitude]
+        locationName = "Bhopal";
+      }
 
       const stations = await Station.find({
         location: {
@@ -150,7 +210,7 @@ const findBestStationTool = tool(
       }).limit(5);
 
       if (stations.length === 0) {
-        return JSON.stringify({ error: `I couldn't find any charging stations within 40km of ${location}.` });
+        return JSON.stringify({ error: `I couldn't find any charging stations within 40km of ${locationName}.` });
       }
 
       let queryDate = new Date(date);
@@ -318,7 +378,7 @@ const findBestStationTool = tool(
     name: "find_best_station",
     description: "Searches for EV charging stations and rigorously checks port availability against active bookings.",
     schema: z.object({
-      location: z.string().describe("The city, area, or address to search near"),
+      location: z.string().optional().describe("The city, area, or address to search near. If not provided, it will automatically search near your current location or past booking location."),
       date: z.string().describe("The exact date for the booking (e.g., '2024-05-02')"),
       startTime: z.string().describe("The start time in 24-hour HH:MM format (e.g., '10:00')"),
       endTime: z.string().describe("The end time in 24-hour HH:MM format (e.g., '12:00')"),
@@ -434,7 +494,7 @@ const createBookingTool = (userInfo) => tool(
   }
 );
 
-const getSystemPrompt = async (userId) => {
+const getSystemPrompt = async (userId, location = null) => {
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   const timeStr = now.toLocaleTimeString('en-US');
@@ -450,18 +510,32 @@ const getSystemPrompt = async (userId) => {
     }
   }
 
+  let locationInfo = "";
+  if (location && typeof location.lat === 'number' && typeof location.lng === 'number') {
+    const address = await reverseGeocodeLocation(location).catch(() => null);
+    locationInfo = `\nUser Current Location:\n- Coordinates: ${location.lat}, ${location.lng}\n`;
+    if (address) {
+      locationInfo += `- Approximate address: ${address}\n`;
+    }
+    locationInfo += `Use this as the user's current location. Do not ask the user for location again unless they explicitly say they want to change it.\n`;
+  }
+
   return new SystemMessage(`You are EvGenee, a helpful, polite, and efficient voice assistant for EV Charging Station bookings.
 Ritul Jain my creator trained me on EvGenee platform. I must only respond to questions related EvGenee.
 For any out-of-topic questions,say Ritul Jain my creator trained me on EvGenee Please ask question related to it,and dont repeat same for same questions give various ans if user try to ask again and again out of context tell him/her that sorry i will not able to help any thing beyound our app.
 
 Current context:
-${profileInfo}
-
+${profileInfo}${locationInfo}
 Guidelines for identifying the user's vehicle and connector:
 1. **Prioritize Saved Vehicles**: If the user mentions booking a charger but hasn't specified which car, and they have saved vehicles in their profile, ask: "Are you booking for your [Vehicle Nickname]?" instead of asking for the charger type.
 2. **Auto-fill Details**: Once the user confirms the vehicle (e.g., "Yes, for the Nexon"), automatically use that vehicle's connector type (e.g., CCS2) for all subsequent searches and bookings without asking again.
 3. **Handle Ambiguity**: If they have multiple saved vehicles, list them and ask which one they are using today.
 4. **Fallback**: If they have no saved vehicles, only then ask for the charger type.
+
+Guidelines for dates, times, and locations:
+1. **Auto-fill Location**: If the user asks to book a slot or search for stations and does not specify a location, do not ask them where they are. Instead, call the 'find_best_station' tool without specifying the location parameter (omit it), as the tool will automatically resolve the user's location based on their GPS coordinates, booking history, or nearby stations.
+2. **Assume Current Date**: If the user does not specify a date for the slot booking, assume today's date.
+3. **Assume Duration**: If the user specifies a start time but no end time or duration (e.g., "book at 10:00"), assume a 1-hour charging duration and calculate the endTime accordingly (e.g., "11:00").
 
 When searching for stations:
 1. Use the identified or confirmed connector type.
@@ -478,14 +552,17 @@ Important:
 - Do not provide long answers.`);
 };
 
-function createVoiceAgent(userInfo, systemPrompt) {
+function createVoiceAgent(userInfo, systemPrompt, userLocation = null) {
   const llm = new ChatGroq({
     model: "openai/gpt-oss-20b",
     temperature: 0.1,
     apiKey: GROQ_API_KEY,
   });
 
-  const tools = [findBestStationTool, createBookingTool(userInfo)];
+  const tools = [
+    createFindBestStationTool(userInfo, userLocation),
+    createBookingTool(userInfo)
+  ];
 
   const agent = createReactAgent({
     llm,
@@ -497,10 +574,10 @@ function createVoiceAgent(userInfo, systemPrompt) {
   return agent;
 }
 
-async function processVoiceChat(message, threadId, userInfo) {
+async function processVoiceChat(message, threadId, userInfo, location = null) {
   try {
     const history = await MessageModel.find({ threadId }).sort({ createdAt: 1 });
-    const systemMessage = await getSystemPrompt(userInfo.userId);
+    const systemMessage = await getSystemPrompt(userInfo.userId, location);
     const formattedHistory = history.map(msg => {
       if (msg.role === 'user') return new HumanMessage(msg.content);
       return new AIMessage(msg.content);
@@ -513,7 +590,7 @@ async function processVoiceChat(message, threadId, userInfo) {
       content: message
     });
 
-    const voiceAgent = createVoiceAgent(userInfo,systemMessage);
+    const voiceAgent = createVoiceAgent(userInfo, systemMessage, location);
     const messagesToInvoke = [...formattedHistory, new HumanMessage(message)];
     
     const response = await voiceAgent.invoke(

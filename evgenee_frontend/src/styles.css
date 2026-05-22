@@ -44,88 +44,90 @@
 }
 
 :root {
-  --radius: 0.875rem;
+  --radius: 4px;
 
-  /* Light, EV-fresh palette inspired by reference */
-  --background: oklch(0.99 0.005 150);
-  --foreground: oklch(0.18 0.02 240);
+  /* Premium Bespoke Slate Palette */
+  --background: #FAF9F6;
+  --foreground: #242426;
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.02 240);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.02 240);
+  --card: #FFFFFF;
+  --card-foreground: #242426;
+  --popover: #FFFFFF;
+  --popover-foreground: #242426;
 
-  /* Vivid EV green */
-  --primary: oklch(0.68 0.19 148);
-  --primary-foreground: oklch(0.99 0 0);
-  --primary-glow: oklch(0.78 0.17 152);
+  /* Deep Charcoal & Terracotta Accents */
+  --primary: #242426;
+  --primary-foreground: #FFFFFF;
+  --primary-glow: #343436;
 
-  --secondary: oklch(0.96 0.01 150);
-  --secondary-foreground: oklch(0.22 0.03 240);
+  --secondary: #C64F38;
+  --secondary-foreground: #FFFFFF;
 
-  --muted: oklch(0.96 0.005 240);
-  --muted-foreground: oklch(0.5 0.02 240);
+  --muted: #FAF9F6;
+  --muted-foreground: #4A6163;
 
-  --accent: oklch(0.95 0.04 150);
-  --accent-foreground: oklch(0.25 0.08 150);
+  --accent: #FAF9F6;
+  --accent-foreground: #C64F38;
 
-  --destructive: oklch(0.62 0.22 27);
-  --destructive-foreground: oklch(0.99 0 0);
+  --destructive: #C64F38;
+  --destructive-foreground: #FFFFFF;
 
-  --success: oklch(0.68 0.19 148);
-  --success-foreground: oklch(0.99 0 0);
+  --success: #4A6163;
+  --success-foreground: #FFFFFF;
 
-  --warning: oklch(0.78 0.17 75);
-  --warning-foreground: oklch(0.2 0.05 75);
+  --warning: #F39C12;
+  --warning-foreground: #FFFFFF;
 
-  --border: oklch(0.92 0.008 240);
-  --input: oklch(0.94 0.008 240);
-  --ring: oklch(0.68 0.19 148);
+  --border: #D1D1D1;
+  --input: #EAEAEA;
+  --ring: #242426;
 
-  --chart-1: oklch(0.68 0.19 148);
-  --chart-2: oklch(0.62 0.18 200);
-  --chart-3: oklch(0.7 0.18 60);
-  --chart-4: oklch(0.6 0.2 300);
-  --chart-5: oklch(0.65 0.22 20);
+  --chart-1: #242426;
+  --chart-2: #C64F38;
+  --chart-3: #4A6163;
+  --chart-4: #94A3B8;
+  --chart-5: #EAEAEA;
 
   /* Brand-specific tokens */
-  --pin: oklch(0.62 0.22 20);
-  --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-glow));
-  --gradient-hero: linear-gradient(180deg, oklch(0.98 0.02 150), oklch(0.93 0.05 150));
-  --shadow-card: 0 8px 30px -12px oklch(0.18 0.02 240 / 0.12);
-  --shadow-elevated: 0 20px 50px -20px oklch(0.18 0.02 240 / 0.25);
-  --shadow-glow: 0 10px 40px -10px oklch(0.68 0.19 148 / 0.5);
-  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --pin: #4A6163;
+  --gradient-primary: linear-gradient(135deg, #242426, #343436);
+  --gradient-hero: linear-gradient(180deg, #FAF9F6, #F2F2F2);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.03);
+  --shadow-elevated: 0 12px 36px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 4px 12px rgba(198, 79, 56, 0.15);
+  --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-top: env(safe-area-inset-top, 0px);
 }
 
 .dark {
-  --background: oklch(0.16 0.02 240);
-  --foreground: oklch(0.98 0.005 150);
-  --card: oklch(0.22 0.025 240);
-  --card-foreground: oklch(0.98 0.005 150);
-  --popover: oklch(0.22 0.025 240);
-  --popover-foreground: oklch(0.98 0.005 150);
-  --primary: oklch(0.72 0.2 148);
-  --primary-foreground: oklch(0.16 0.02 240);
-  --primary-glow: oklch(0.8 0.17 150);
-  --secondary: oklch(0.28 0.03 240);
-  --secondary-foreground: oklch(0.98 0.005 150);
-  --muted: oklch(0.28 0.03 240);
-  --muted-foreground: oklch(0.72 0.02 240);
-  --accent: oklch(0.32 0.06 150);
-  --accent-foreground: oklch(0.95 0.05 150);
-  --destructive: oklch(0.7 0.2 22);
-  --destructive-foreground: oklch(0.98 0 0);
-  --success: oklch(0.72 0.2 148);
-  --success-foreground: oklch(0.16 0.02 240);
-  --warning: oklch(0.78 0.17 75);
-  --warning-foreground: oklch(0.16 0.02 240);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.72 0.2 148);
+  /* Retain light editorial slate canvas in dark mode for bespoke paper print feel,
+     or map it to a high-end charcoal base */
+  --background: #1A1A1C;
+  --foreground: #FAF9F6;
+  --card: #242426;
+  --card-foreground: #FAF9F6;
+  --popover: #242426;
+  --popover-foreground: #FAF9F6;
+  --primary: #FAF9F6;
+  --primary-foreground: #242426;
+  --primary-glow: #EAEAEA;
+  --secondary: #C64F38;
+  --secondary-foreground: #FFFFFF;
+  --muted: #242426;
+  --muted-foreground: #94A3B8;
+  --accent: #242426;
+  --accent-foreground: #C64F38;
+  --destructive: #C64F38;
+  --destructive-foreground: #FFFFFF;
+  --success: #4A6163;
+  --success-foreground: #FFFFFF;
+  --warning: #F39C12;
+  --warning-foreground: #FFFFFF;
+  --border: #3A3A3C;
+  --input: #3A3A3C;
+  --ring: #FAF9F6;
 }
 
 @layer base {
@@ -151,92 +153,87 @@
 }
 .leaflet-control-attribution {
   font-size: 10px !important;
-  background: rgba(255, 255, 255, 0.7) !important;
+  background: rgba(250, 249, 246, 0.8) !important;
 }
 
-/* Custom EV pin */
+/* Geometric Tactile EV Pin */
 .ev-pin {
-  background: var(--color-primary);
-  width: 36px;
-  height: 36px;
-  border-radius: 50% 50% 50% 0;
+  background: #4A6163; /* Slate green by default */
+  width: 32px;
+  height: 32px;
+  border-radius: 4px 4px 4px 0; /* Diamond shape rotated */
   transform: rotate(-45deg);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 3px solid white;
-  box-shadow: var(--shadow-glow);
+  border: 1.5px solid #FAF9F6;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
 }
 .ev-pin svg {
   transform: rotate(45deg);
   color: white;
 }
 .ev-pin.unavail {
-  background: oklch(0.65 0.04 240);
-  box-shadow: 0 4px 14px -4px oklch(0 0 0 / 0.3);
+  background: #C64F38; /* Terracotta for occupied */
 }
 .ev-pin.closed-pin {
-  background: #64748b; /* Slate grey */
-  box-shadow: 0 4px 14px -4px rgba(0,0,0,0.2);
+  background: #94A3B8; /* Muted Slate grey for closed */
 }
 .ev-pin.hovered {
-  width: 44px;
-  height: 44px;
-  background: var(--color-primary);
-  box-shadow:
-    0 0 0 4px white,
-    0 0 0 7px var(--color-primary),
-    var(--shadow-glow);
+  width: 38px;
+  height: 38px;
+  background: #242426; /* Active selection deep charcoal */
+  border: 2px solid #FAF9F6;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
   z-index: 1000;
 }
 .ev-pin.hovered svg {
   transform: rotate(45deg);
 }
 .ev-pin.user {
-  background: #ef4444;
-  box-shadow:
-    0 0 0 8px rgba(239, 68, 68, 0.18),
-    0 0 0 16px rgba(239, 68, 68, 0.08);
+  background: #C64F38;
 }
 
-/* User location dot (separate from station pins) */
+/* Geometric tactile user location dot */
 .ev-user-dot {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #ef4444;
-  border: 3px solid white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: #C64F38;
+  border: 2px solid #FAF9F6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transform: rotate(45deg);
   animation: user-pulse 2s ease-out infinite;
 }
 
 @keyframes user-pulse {
   0% {
     box-shadow:
-      0 0 0 0 rgba(239, 68, 68, 0.5),
-      0 2px 8px rgba(0, 0, 0, 0.3);
+      0 0 0 0 rgba(198, 79, 56, 0.4),
+      0 2px 8px rgba(0, 0, 0, 0.15);
   }
   70% {
     box-shadow:
-      0 0 0 14px rgba(239, 68, 68, 0),
-      0 2px 8px rgba(0, 0, 0, 0.3);
+      0 0 0 12px rgba(198, 79, 56, 0),
+      0 2px 8px rgba(0, 0, 0, 0.15);
   }
   100% {
     box-shadow:
-      0 0 0 0 rgba(239, 68, 68, 0),
-      0 2px 8px rgba(0, 0, 0, 0.3);
+      0 0 0 0 rgba(198, 79, 56, 0),
+      0 2px 8px rgba(0, 0, 0, 0.15);
   }
 }
 
 @keyframes pulse-ring {
   0% {
-    box-shadow: 0 0 0 0 oklch(0.68 0.19 148 / 0.5);
+    box-shadow: 0 0 0 0 rgba(198, 79, 56, 0.4);
   }
   70% {
-    box-shadow: 0 0 0 16px oklch(0.68 0.19 148 / 0);
+    box-shadow: 0 0 0 12px rgba(198, 79, 56, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 oklch(0.68 0.19 148 / 0);
+    box-shadow: 0 0 0 0 rgba(198, 79, 56, 0);
   }
 }
 .animate-pulse-ring {

@@ -37,7 +37,7 @@ import { VoiceAssistant } from "@/components/VoiceAssistant";
 function RootComponent() {
   return (
     <AuthProvider>
-      <div className="min-h-screen pb-20 bg-[#000814]" style={{ paddingTop: "var(--safe-top)" }}>
+      <div className="min-h-screen pb-20 bg-[#FAF9F6]" style={{ paddingTop: "var(--safe-top)" }}>
         <Outlet />
       </div>
       <BottomNav />

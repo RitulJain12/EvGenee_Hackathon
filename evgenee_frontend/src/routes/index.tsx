@@ -382,12 +382,10 @@ function HomePage() {
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                background: "rgba(0,8,20,0.90)",
-                backdropFilter: "blur(16px)",
-                WebkitBackdropFilter: "blur(16px)",
-                borderRadius: 16,
-                border: "1px solid rgba(255,255,255,0.1)",
-                boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
+                background: "#ffffff",
+                borderRadius: 4,
+                border: "1px solid #D1D1D1",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
                 padding: "0 12px 0 16px",
                 height: 48,
                 cursor: "text",
@@ -397,7 +395,7 @@ function HomePage() {
                 input?.focus();
               }}
             >
-              <Search size={16} color="rgba(255,255,255,0.4)" style={{ flexShrink: 0 }} />
+              <Search size={16} color="#4A6163" style={{ flexShrink: 0 }} />
               <input
                 type="text"
                 autoComplete="off"
@@ -422,7 +420,7 @@ function HomePage() {
                   outline: "none",
                   background: "transparent",
                   fontSize: 15,
-                  color: "#ffffff",
+                  color: "#242426",
                   minWidth: 0,
                   WebkitAppearance: "none",
                   touchAction: "manipulation",
@@ -442,9 +440,9 @@ function HomePage() {
                     background: "none",
                     padding: 6,
                     cursor: "pointer",
-                    color: "rgba(255,255,255,0.4)",
+                    color: "#4A6163",
                     display: "flex",
-                    borderRadius: 8,
+                    borderRadius: 4,
                     flexShrink: 0,
                     pointerEvents: "auto",
                   }}
@@ -454,7 +452,7 @@ function HomePage() {
               ) : loadingStations ? (
                 <Loader2
                   size={16}
-                  className="animate-spin text-primary"
+                  className="animate-spin text-[#242426]"
                   style={{ flexShrink: 0 }}
                 />
               ) : null}
@@ -464,24 +462,25 @@ function HomePage() {
             <div
               style={{
                 flexShrink: 0,
-                background: "rgba(0,8,20,0.90)",
-                border: "1px solid rgba(34,197,94,0.3)",
-                borderRadius: 16,
-                backdropFilter: "blur(16px)",
-                WebkitBackdropFilter: "blur(16px)",
-                boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
-                padding: "0 12px",
+                background: "#242426",
+                border: "1px solid #242426",
+                borderRadius: 4,
+                boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
+                padding: "0 16px",
                 display: "flex",
                 alignItems: "center",
-                gap: 5,
+                gap: 6,
                 height: 48,
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: 700,
-                color: "#22c55e",
+                color: "#ffffff",
                 whiteSpace: "nowrap",
+                fontFamily: "'Space Grotesk', sans-serif",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
               }}
             >
-              <Zap size={13} color="#22c55e" fill="#22c55e" />
+              <Zap size={13} color="#C64F38" fill="#C64F38" />
               {loadingStations ? "…" : `${stations.length} nearby`}
             </div>
           </div>
@@ -490,10 +489,10 @@ function HomePage() {
           {showDropdown && search.trim() && (
             <div
               style={{
-                background: "rgba(10,22,40,0.97)",
-                borderRadius: 16,
-                border: "1px solid rgba(255,255,255,0.08)",
-                boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+                background: "#ffffff",
+                borderRadius: 4,
+                border: "1px solid #D1D1D1",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.08)",
                 overflow: "hidden",
                 maxHeight: 280,
                 overflowY: "auto",
@@ -505,12 +504,12 @@ function HomePage() {
                   style={{
                     padding: "24px 16px",
                     textAlign: "center",
-                    color: "rgba(255,255,255,0.3)",
+                    color: "#4A6163",
                   }}
                 >
                   <Plug
                     size={28}
-                    style={{ margin: "0 auto 8px", opacity: 0.4, display: "block" }}
+                    style={{ margin: "0 auto 8px", opacity: 0.4, display: "block", color: "#4A6163" }}
                   />
                   <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>No stations found</p>
                 </div>
@@ -534,16 +533,16 @@ function HomePage() {
                         display: "flex",
                         alignItems: "center",
                         gap: 12,
-                        padding: "10px 14px",
+                        padding: "12px 14px",
                         background: "none",
                         border: "none",
-                        borderBottom: "1px solid rgba(255,255,255,0.05)",
+                        borderBottom: "1px solid #EAEAEA",
                         cursor: "pointer",
                         textAlign: "left",
                         transition: "background 0.12s",
                       }}
                       onMouseEnter={(e) =>
-                        (e.currentTarget.style.background = "rgba(255,255,255,0.05)")
+                        (e.currentTarget.style.background = "#F5F5F5")
                       }
                       onMouseLeave={(e) => (e.currentTarget.style.background = "none")}
                     >
@@ -551,19 +550,20 @@ function HomePage() {
                         style={{
                           width: 36,
                           height: 36,
-                          borderRadius: 10,
-                          background: avail ? "rgba(34,197,94,0.1)" : "rgba(255,255,255,0.05)",
+                          borderRadius: 4,
+                          background: avail ? "#E0EAEB" : "#F5F5F5",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           flexShrink: 0,
+                          border: "1px solid #D1D1D1",
                         }}
                       >
                         <FontAwesomeIcon
                           icon={faChargingStation}
                           style={{
                             fontSize: 16,
-                            color: avail ? "#22c55e" : "rgba(255,255,255,0.3)",
+                            color: avail ? "#4A6163" : "#C7C6CA",
                           }}
                         />
                       </div>
@@ -571,12 +571,13 @@ function HomePage() {
                         <p
                           style={{
                             margin: 0,
-                            fontWeight: 600,
+                            fontWeight: 700,
                             fontSize: 13,
-                            color: "white",
+                            color: "#242426",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
+                            fontFamily: "'Space Grotesk', sans-serif",
                           }}
                         >
                           {s.name}
@@ -585,7 +586,7 @@ function HomePage() {
                           style={{
                             margin: "2px 0 0",
                             fontSize: 11,
-                            color: "rgba(255,255,255,0.35)",
+                            color: "#4A6163",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
@@ -610,12 +611,12 @@ function HomePage() {
                               fontSize: 11,
                               fontWeight: 700,
                               // Green for road distance (accurate), gray for haversine (approximate)
-                              color: distInfo.isRoad ? "#22c55e" : "rgba(255,255,255,0.45)",
+                              color: distInfo.isRoad ? "#C64F38" : "#4A6163",
                               background: distInfo.isRoad
-                                ? "rgba(34,197,94,0.1)"
-                                : "rgba(255,255,255,0.07)",
+                                ? "#FBE8E4"
+                                : "#E0EAEB",
                               padding: "1px 6px",
-                              borderRadius: 6,
+                              borderRadius: 4,
                               display: "flex",
                               alignItems: "center",
                               gap: 3,
@@ -638,14 +639,14 @@ function HomePage() {
                         <span
                           style={{
                             fontSize: 11,
-                            fontWeight: 600,
-                            color: avail ? "#22c55e" : "rgba(255,255,255,0.3)",
+                            fontWeight: 700,
+                            color: avail ? "#C64F38" : "#4A6163",
                           }}
                         >
                           {avail ? `${s.availablePorts} free` : s.isOpen ? "Full" : "Closed"}
                         </span>
                       </div>
-                      <ChevronRight size={14} color="rgba(255,255,255,0.2)" />
+                      <ChevronRight size={14} color="#C7C6CA" />
                     </button>
                   );
                 })
@@ -666,11 +667,10 @@ function HomePage() {
           zIndex: 600,
           width: 48,
           height: 48,
-          borderRadius: "50%",
-          background: "rgba(0,8,20,0.90)",
-          backdropFilter: "blur(12px)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+          borderRadius: 4,
+          background: "#ffffff",
+          border: "1px solid #D1D1D1",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -682,9 +682,9 @@ function HomePage() {
         onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
       >
         {locating ? (
-          <Loader2 size={20} className="animate-spin text-primary" />
+          <Loader2 size={20} className="animate-spin text-[#242426]" />
         ) : (
-          <LocateFixed size={20} color="#22c55e" />
+          <LocateFixed size={20} color="#242426" />
         )}
       </button>
 
@@ -700,28 +700,30 @@ function HomePage() {
             zIndex: 600,
             width: 56,
             height: 56,
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
-            boxShadow: "0 0 24px rgba(239,68,68,0.6), 0 4px 16px rgba(239,68,68,0.4)",
+            borderRadius: 4,
+            background: "#C64F38",
+            boxShadow: "0 4px 16px rgba(198,79,56,0.2)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
             textDecoration: "none",
             pointerEvents: "auto",
-            animation: "sos-pulse 2.5s ease-in-out infinite",
+            transition: "all 0.2s",
+            border: "1px solid #C64F38",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#242426";
+            e.currentTarget.style.borderColor = "#242426";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#C64F38";
+            e.currentTarget.style.borderColor = "#C64F38";
           }}
         >
-          <span style={{ color: "white", fontWeight: 900, fontSize: 16 }}>SOS</span>
+          <span style={{ color: "white", fontWeight: 700, fontSize: 14, fontFamily: "'Space Grotesk', sans-serif", letterSpacing: "0.05em" }}>SOS</span>
         </Link>
       )}
-
-      <style>{`
-        @keyframes sos-pulse {
-          0%, 100% { box-shadow: 0 0 24px rgba(239,68,68,0.6), 0 4px 16px rgba(239,68,68,0.4); }
-          50% { box-shadow: 0 0 40px rgba(239,68,68,0.9), 0 4px 24px rgba(239,68,68,0.6); }
-        }
-      `}</style>
 
       {/* ── MOBILE BOTTOM DRAWER ── */}
       <div className="md:hidden">
@@ -743,10 +745,10 @@ function HomePage() {
                 bottom: NAV_H,
                 zIndex: 999,
                 maxHeight: "82vh",
-                background: "rgba(10,22,40,0.97)",
-                borderRadius: "24px 24px 0 0",
-                boxShadow: "0 -4px 32px rgba(0,0,0,0.3)",
-                borderTop: "1px solid rgba(255,255,255,0.08)",
+                background: "#ffffff",
+                borderRadius: "12px 12px 0 0",
+                boxShadow: "0 -4px 32px rgba(0,0,0,0.05)",
+                borderTop: "1px solid #D1D1D1",
                 display: "flex",
                 flexDirection: "column",
               }}
@@ -756,37 +758,41 @@ function HomePage() {
                   width: 36,
                   height: 4,
                   borderRadius: 2,
-                  background: "rgba(255,255,255,0.15)",
+                  background: "#D1D1D1",
                   margin: "10px auto 4px",
                   flexShrink: 0,
                 }}
               />
               <div
                 style={{
-                  padding: "4px 16px 10px",
+                  padding: "8px 16px 12px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
                   flexShrink: 0,
+                  borderBottom: "1px solid #EAEAEA",
                 }}
               >
                 <div>
-                  <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: "white" }}>
+                  <p style={{ margin: 0, fontWeight: 700, fontSize: 14, color: "#242426", fontFamily: "'Space Grotesk', sans-serif", textTransform: "uppercase", letterSpacing: "0.03em" }}>
                     Nearby Stations
                   </p>
-                  <p style={{ margin: "2px 0 0", fontSize: 11, color: "rgba(255,255,255,0.3)" }}>
-                    Swipe up to browse all
+                  <p style={{ margin: "2px 0 0", fontSize: 11, color: "#4A6163" }}>
+                    Browse live available terminals
                   </p>
                 </div>
                 <span
                   style={{
-                    background: "rgba(34,197,94,0.15)",
-                    color: "#22c55e",
-                    border: "1px solid rgba(34,197,94,0.2)",
-                    borderRadius: 20,
+                    background: "#242426",
+                    color: "#ffffff",
+                    border: "1px solid #242426",
+                    borderRadius: 4,
                     padding: "2px 10px",
                     fontSize: 11,
                     fontWeight: 700,
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
                   }}
                 >
                   {filtered.length} found
@@ -810,25 +816,25 @@ function HomePage() {
                       flexDirection: "column",
                       alignItems: "center",
                       gap: 10,
-                      color: "rgba(255,255,255,0.3)",
+                      color: "#4A6163",
                     }}
                   >
-                    <Loader2 size={28} className="animate-spin text-primary" />
-                    <p style={{ margin: 0, fontSize: 13 }}>Finding stations…</p>
+                    <Loader2 size={28} className="animate-spin text-[#242426]" />
+                    <p style={{ margin: 0, fontSize: 13, fontFamily: "'Inter', sans-serif" }}>Finding stations…</p>
                   </div>
                 ) : filtered.length === 0 ? (
                   <div
                     style={{
                       padding: "32px 0",
                       textAlign: "center",
-                      color: "rgba(255,255,255,0.3)",
+                      color: "#4A6163",
                     }}
                   >
                     <Plug
                       size={28}
-                      style={{ margin: "0 auto 8px", opacity: 0.4, display: "block" }}
+                      style={{ margin: "0 auto 8px", opacity: 0.4, display: "block", color: "#4A6163" }}
                     />
-                    <p style={{ margin: 0, fontSize: 13, fontWeight: 500 }}>No stations found</p>
+                    <p style={{ margin: 0, fontSize: 13, fontWeight: 500, fontFamily: "'Inter', sans-serif" }}>No stations found</p>
                   </div>
                 ) : (
                   filtered.map((s) => (
@@ -890,29 +896,30 @@ function MobileCard({
         width: "100%",
         textAlign: "left",
         padding: 12,
-        background: isSelected ? "rgba(34,197,94,0.1)" : "rgba(255,255,255,0.04)",
-        border: `1.5px solid ${isSelected ? "rgba(34,197,94,0.4)" : "rgba(255,255,255,0.08)"}`,
-        borderRadius: 16,
+        background: isSelected ? "#FBE8E4" : "#ffffff",
+        border: `1px solid ${isSelected ? "#C64F38" : "#D1D1D1"}`,
+        borderRadius: 4,
         display: "flex",
         alignItems: "center",
         gap: 12,
         cursor: "pointer",
         transition: "all 0.15s",
-        boxShadow: isSelected ? "0 0 0 3px rgba(34,197,94,0.1)" : "none",
+        boxShadow: isSelected ? "0 4px 12px rgba(198,79,56,0.08)" : "none",
       }}
     >
       <div
         style={{
           width: 52,
           height: 52,
-          borderRadius: 14,
-          background: avail ? "rgba(34,197,94,0.1)" : "rgba(255,255,255,0.05)",
+          borderRadius: 4,
+          background: avail ? "#E0EAEB" : "#F5F5F5",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
           position: "relative",
           overflow: "hidden",
+          border: "1px solid #D1D1D1",
         }}
       >
         {station.Images?.[0] ? (
@@ -926,7 +933,7 @@ function MobileCard({
             icon={faChargingStation}
             style={{
               fontSize: 22,
-              color: avail ? "#22c55e" : "rgba(255,255,255,0.3)",
+              color: avail ? "#4A6163" : "#C7C6CA",
             }}
           />
         )}
@@ -935,11 +942,11 @@ function MobileCard({
             position: "absolute",
             top: 3,
             right: 3,
-            width: 10,
-            height: 10,
+            width: 8,
+            height: 8,
             borderRadius: "50%",
-            background: avail ? "#22c55e" : station.isOpen ? "#fbbf24" : "rgba(255,255,255,0.2)",
-            border: "2px solid rgba(10,22,40,0.9)",
+            background: avail ? "#C64F38" : station.isOpen ? "#4A6163" : "#C7C6CA",
+            border: "1.5px solid #ffffff",
           }}
         />
       </div>
@@ -949,10 +956,11 @@ function MobileCard({
             margin: 0,
             fontWeight: 700,
             fontSize: 13,
-            color: "white",
+            color: "#242426",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
+            fontFamily: "'Space Grotesk', sans-serif",
           }}
         >
           {station.name}
@@ -961,7 +969,7 @@ function MobileCard({
           style={{
             margin: "3px 0 0",
             fontSize: 11,
-            color: "rgba(255,255,255,0.35)",
+            color: "#4A6163",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -971,29 +979,29 @@ function MobileCard({
           }}
         >
           <MapPin size={10} style={{ flexShrink: 0 }} /> {station.address?.street},{" "}
-          {station.address?.city} • <span className="font-semibold text-white/50">{station.openingHours || "24/7"}</span>
+          {station.address?.city} • <span className="font-semibold text-[#4A6163]">{station.openingHours || "24/7"}</span>
         </p>
         <div
           style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 5, flexWrap: "wrap" }}
         >
-          <span style={{ fontSize: 11, fontWeight: 700, color: "#22c55e" }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "#C64F38" }}>
             {sym}
             {minPrice}/kWh
           </span>
           {avgRating && (
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#f59e0b" }}>★ {avgRating}</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#4A6163" }}>★ {avgRating}</span>
           )}
           <span
             style={{
               fontSize: 11,
               fontWeight: 700,
-              color: avail ? "#22c55e" : "rgba(255,255,255,0.3)",
+              color: avail ? "#C64F38" : "#4A6163",
               display: "flex",
               alignItems: "center",
               gap: 4
             }}
           >
-            {avail && <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />}
+            {avail && <span className="h-1.5 w-1.5 rounded-full bg-[#C64F38] animate-pulse" />}
             {avail ? `${station.availablePorts} free` : station.isOpen ? "Full" : "Closed"}
           </span>
 
@@ -1003,13 +1011,12 @@ function MobileCard({
               style={{
                 fontSize: 11,
                 fontWeight: 700,
-                // Green for road distance (accurate), gray for haversine (approximate)
-                color: distInfo.isRoad ? "#22c55e" : "rgba(255,255,255,0.45)",
+                color: distInfo.isRoad ? "#C64F38" : "#4A6163",
                 background: distInfo.isRoad
-                  ? "rgba(34,197,94,0.1)"
-                  : "rgba(255,255,255,0.07)",
+                  ? "#FBE8E4"
+                  : "#E0EAEB",
                 padding: "1px 6px",
-                borderRadius: 6,
+                borderRadius: 4,
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 3,
@@ -1025,7 +1032,7 @@ function MobileCard({
       </div>
       <ChevronRight
         size={16}
-        color={isSelected ? "#22c55e" : "rgba(255,255,255,0.2)"}
+        color={isSelected ? "#C64F38" : "#C7C6CA"}
         style={{ flexShrink: 0 }}
       />
     </button>
