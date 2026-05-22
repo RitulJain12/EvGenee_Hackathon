@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { errorHandler } = require('./middlewares/error.middleware');
+const path = require('path');
 
 const stationRoutes = require('./routes/station.routes');
 const bookingRoutes = require('./routes/booking.routes');
@@ -44,6 +45,16 @@ app.use('/api/v1/bookings', bookingRoutes);
 app.use('/api/v1/payment', paymentRoutes);
 app.use('/api/v1/ai', aiRoutes);
 app.use('/api/v1/roadside', roadsideRoutes);
+
+// Serve frontend static files copied into backend `public` folder
+const publicDir = path.join(__dirname, '..', 'public');
+app.use(express.static(publicDir));
+
+// Fallback to index.html for client-side routing, but ignore API routes
+app.use((req, res, next) => {
+    if (req.originalUrl.startsWith('/api/')) return next();
+    res.sendFile(path.join(publicDir, 'index.html'));
+});
 
 
 app.use((req, res) => {
