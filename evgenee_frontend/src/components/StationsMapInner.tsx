@@ -10,6 +10,7 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import type { Station } from "@/lib/api";
+import { isStationOpenNow } from "@/lib/utils";
 import { Star, Navigation } from "lucide-react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -158,8 +159,9 @@ function StationPopupCard({
   }, [userLocation, station.location.coordinates]);
 
   const displayDist = roadDist !== null ? roadDist : station.distanceKm;
-  const isClosed = !station.isOpen;
-  const avail = !isClosed && station.availablePorts > 0;
+  const isOpenNow = isStationOpenNow(station);
+  const isClosed = !isOpenNow;
+  const avail = isOpenNow && station.availablePorts > 0;
   const minPrice = station.pricing?.length
     ? Math.min(...station.pricing.map((p) => p.priceperKWh))
     : 0;

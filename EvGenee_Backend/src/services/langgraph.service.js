@@ -12,12 +12,35 @@ const { GROQ_API_KEY, PLATFORM_FEE_PERCENTAGE } = require('../config/config');
 const axios = require("axios");
 const memory = new MemorySaver();
 
+let groqLlm = null;
+const getGroqLlM = () => {
+  if (!groqLlm) {
+    groqLlm = new ChatGroq({
+      model: "openai/gpt-oss-20b",
+      temperature: 0.1,
+      apiKey: GROQ_API_KEY,
+    });
+  }
+  return groqLlm;
+};
+
+const geocodeCache = new Map();
+const reverseGeocodeCache = new Map();
+const roadDistanceCache = new Map();
+
 async function geocodeLocation(locationStr) {
   try {
+    const cacheKey = locationStr.trim().toLowerCase();
+    if (geocodeCache.has(cacheKey)) {
+      return geocodeCache.get(cacheKey);
+    }
+
     const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(locationStr)}&format=json&limit=1`;
     const response = await axios.get(url, { headers: { "User-Agent": "EvGenee_Bot" } });
     if (response.data && response.data.length > 0) {
-      return [parseFloat(response.data[0].lon), parseFloat(response.data[0].lat)];
+      const coords = [parseFloat(response.data[0].lon), parseFloat(response.data[0].lat)];
+      geocodeCache.set(cacheKey, coords);
+      return coords;
     }
     return null;
   } catch (err) {
@@ -28,9 +51,15 @@ async function geocodeLocation(locationStr) {
 
 async function reverseGeocodeLocation(coords) {
   try {
+    const cacheKey = `${coords.lat},${coords.lng}`;
+    if (reverseGeocodeCache.has(cacheKey)) {
+      return reverseGeocodeCache.get(cacheKey);
+    }
+
     const url = `https://nominatim.openstreetmap.org/reverse?lat=${coords.lat}&lon=${coords.lng}&format=json`;
     const response = await axios.get(url, { headers: { "User-Agent": "EvGenee_Bot" } });
     if (response.data && response.data.display_name) {
+      reverseGeocodeCache.set(cacheKey, response.data.display_name);
       return response.data.display_name;
     }
     return null;
@@ -41,14 +70,21 @@ async function reverseGeocodeLocation(coords) {
 }
 async function getRoadDistance(startCoords, endCoords) {
   try {
+    const cacheKey = `${startCoords[0]},${startCoords[1]}|${endCoords[0]},${endCoords[1]}`;
+    if (roadDistanceCache.has(cacheKey)) {
+      return roadDistanceCache.get(cacheKey);
+    }
+
     const url = `http://router.project-osrm.org/route/v1/driving/${startCoords[0]},${startCoords[1]};${endCoords[0]},${endCoords[1]}?overview=false`;
     const response = await axios.get(url);
     if (response.data && response.data.routes && response.data.routes.length > 0) {
       const route = response.data.routes[0];
-      return {
+      const result = {
         distanceKm: (route.distance / 1000).toFixed(2),
         durationMins: (route.duration / 60).toFixed(1)
       };
+      roadDistanceCache.set(cacheKey, result);
+      return result;
     }
     return null;
   } catch (err) {
@@ -68,16 +104,18 @@ const minutesToTime = (minutes) => {
   return `${h}:${m}`;
 };
 
-async function checkAvailability(stationId, date, connectorType, startTime, endTime, maxPorts) {
-  const bookings = await Booking.find({
-    station: stationId,
-    date,
-    connectorType,
-    $or: [
-      { status: { $in: ['confirmed', 'in-progress'] } },
-      { status: 'pending', createdAt: { $gt: new Date(Date.now() - 10 * 60 * 1000) } }
-    ],
-  });
+async function checkAvailability(stationId, date, connectorType, startTime, endTime, maxPorts, bookings = null) {
+  if (!bookings) {
+    bookings = await Booking.find({
+      station: stationId,
+      date,
+      connectorType,
+      $or: [
+        { status: { $in: ['confirmed', 'in-progress'] } },
+        { status: 'pending', createdAt: { $gt: new Date(Date.now() - 10 * 60 * 1000) } }
+      ],
+    }).lean();
+  }
 
   const reqStart = timeToMinutes(startTime);
   const reqEnd = timeToMinutes(endTime);
@@ -95,7 +133,9 @@ async function checkAvailability(stationId, date, connectorType, startTime, endT
 
   let currentConcurrent = 0;
   for (const b of bookings) {
-    if (reqStart >= timeToMinutes(b.startTime) && reqStart < timeToMinutes(b.endTime)) {
+    const bStart = timeToMinutes(b.startTime);
+    const bEnd = timeToMinutes(b.endTime);
+    if (reqStart >= bStart && reqStart < bEnd) {
       currentConcurrent++;
     }
   }
@@ -115,10 +155,26 @@ async function checkAvailability(stationId, date, connectorType, startTime, endT
   return { available: true };
 }
 
-async function findNextAvailableSlot(stationId, date, connectorType, startTime, durationMinutes, maxPorts, stationOpeningHours) {
+async function findNextAvailableSlot(stationId, date, connectorType, startTime, durationMinutes, maxPorts, stationOpeningHours, bookings = null) {
+  if (!bookings) {
+    bookings = await Booking.find({
+      station: stationId,
+      date,
+      connectorType,
+      $or: [
+        { status: { $in: ['confirmed', 'in-progress'] } },
+        { status: 'pending', createdAt: { $gt: new Date(Date.now() - 10 * 60 * 1000) } }
+      ],
+    }).lean();
+  }
+
+  const bookingIntervals = bookings.map((b) => ({
+    start: timeToMinutes(b.startTime),
+    end: timeToMinutes(b.endTime)
+  }));
+
   let currentStartMin = timeToMinutes(startTime);
-  const searchLimitMin = currentStartMin + 480; 
-  
+  const searchLimitMin = currentStartMin + 480;
   let openMin = 0;
   let closeMin = 1439;
   if (stationOpeningHours) {
@@ -129,14 +185,22 @@ async function findNextAvailableSlot(stationId, date, connectorType, startTime, 
 
   while (currentStartMin + durationMinutes <= Math.min(searchLimitMin, closeMin)) {
     currentStartMin += 15;
-    const nextStart = minutesToTime(currentStartMin);
-    const nextEnd = minutesToTime(currentStartMin + durationMinutes);
-    
-    const result = await checkAvailability(stationId, date, connectorType, nextStart, nextEnd, maxPorts);
-    if (result.available) {
-      return nextStart;
+    const nextStart = currentStartMin;
+    const nextEnd = currentStartMin + durationMinutes;
+
+    let concurrent = 0;
+    for (const interval of bookingIntervals) {
+      if (interval.start < nextEnd && interval.end > nextStart) {
+        concurrent++;
+        if (concurrent >= maxPorts) break;
+      }
+    }
+
+    if (concurrent < maxPorts) {
+      return minutesToTime(nextStart);
     }
   }
+
   return null;
 }
 
@@ -200,25 +264,34 @@ const createFindBestStationTool = (userInfo, userLocation) => tool(
         locationName = "Bhopal";
       }
 
-      const stations = await Station.find({
+      const stationQuery = {
         location: {
           $near: {
             $geometry: { type: "Point", coordinates: coords },
             $maxDistance: 4000000
           }
-        }
-      }).limit(5);
+        },
+        typeOfConnectors: chargerType,
+        isOpen: true
+      };
+
+      const stations = await Station.find(stationQuery).limit(5).lean();
 
       if (stations.length === 0) {
-        return JSON.stringify({ error: `I couldn't find any charging stations within 40km of ${locationName}.` });
+        return JSON.stringify({ error: `I couldn't find any open charging stations with ${chargerType} nearby ${locationName}.` });
       }
 
-      let queryDate = new Date(date);
+      const inputDate = typeof date === 'string' && date.trim().toLowerCase() === 'today' ? null : date;
+      let queryDate = inputDate ? new Date(inputDate) : new Date();
       if (isNaN(queryDate.valueOf())) {
-        queryDate = new Date(); 
+        queryDate = new Date();
       }
       queryDate.setHours(0, 0, 0, 0);
-      
+
+      const effectiveEndTime = endTime && endTime.trim()
+        ? endTime
+        : minutesToTime(timeToMinutes(startTime) + 60);
+
       const now = new Date();
       const indianTimeStr = now.toLocaleString("en-US", { timeZone: "Asia/Kolkata", hour12: false });
       const [datePart, timePart] = indianTimeStr.split(', ');
@@ -240,14 +313,21 @@ const createFindBestStationTool = (userInfo, userLocation) => tool(
 
       let exactMatchStation = null;
       let exactMatchRoadInfo = null;
-      let validStations = [];
+      const stationBookings = new Map();
+      const roadInfoCache = new Map();
+      const requestedDuration = timeToMinutes(effectiveEndTime) - timeToMinutes(startTime);
+
+      const getCachedRoadInfo = async (station) => {
+        const key = station._id.toString();
+        if (roadInfoCache.has(key)) {
+          return roadInfoCache.get(key);
+        }
+        const info = await getRoadDistance(coords, station.location.coordinates);
+        roadInfoCache.set(key, info);
+        return info;
+      };
 
       for (const st of stations) {
-        if (!st.typeOfConnectors.includes(chargerType)) continue;
-        if (!st.isOpen) continue;
-        
-        validStations.push(st);
-
         const bookings = await Booking.find({
           station: st._id,
           date: queryDate,
@@ -256,30 +336,27 @@ const createFindBestStationTool = (userInfo, userLocation) => tool(
             { status: { $in: ['confirmed', 'in-progress'] } },
             { status: 'pending', createdAt: { $gt: new Date(Date.now() - 10 * 60 * 1000) } }
           ],
-        });
+        }).lean();
+        stationBookings.set(st._id.toString(), bookings);
 
-        // Optimized Concurrency Check for AI
         const pricingConfig = st.pricing.find(p => p.connectorType === chargerType);
         const maxPorts = pricingConfig?.portCount || st.availablePorts;
-        const requestedDuration = timeToMinutes(endTime) - timeToMinutes(startTime);
-
-        const availabilityResult = await checkAvailability(st._id, queryDate, chargerType, startTime, endTime, maxPorts);
+        const availabilityResult = await checkAvailability(st._id, queryDate, chargerType, startTime, effectiveEndTime, maxPorts, bookings);
 
         if (availabilityResult.available) {
           exactMatchStation = st;
-          exactMatchRoadInfo = await getRoadDistance(coords, st.location.coordinates);
-          break; 
-        } else {
-          // If this station is full, check for next available slot to suggest
-          const nextSlot = await findNextAvailableSlot(st._id, queryDate, chargerType, startTime, requestedDuration, maxPorts, st.openingHours);
-          if (nextSlot) {
-            st.nextAvailableSlot = nextSlot;
-          }
+          exactMatchRoadInfo = await getCachedRoadInfo(st);
+          break;
+        }
+
+        const nextSlot = await findNextAvailableSlot(st._id, queryDate, chargerType, startTime, requestedDuration, maxPorts, st.openingHours, bookings);
+        if (nextSlot) {
+          st.nextAvailableSlot = nextSlot;
         }
       }
 
       const stationsData = await Promise.all(stations.map(async (st) => {
-        const roadInfo = await getRoadDistance(coords, st.location.coordinates);
+        const roadInfo = await getCachedRoadInfo(st);
         return {
           id: st._id,
           name: st.name,
@@ -290,7 +367,7 @@ const createFindBestStationTool = (userInfo, userLocation) => tool(
           chargerTypes: st.typeOfConnectors,
           chargingSpeed: st.chargingSpeed,
           pricing: st.pricing,
-          isCompatible: st.typeOfConnectors.includes(chargerType),
+          isCompatible: true,
           nextAvailableSlot: st.nextAvailableSlot || null,
           roadDistance: roadInfo ? roadInfo.distanceKm : null,
           travelTime: roadInfo ? roadInfo.durationMins : null
@@ -298,7 +375,7 @@ const createFindBestStationTool = (userInfo, userLocation) => tool(
       }));
 
       if (exactMatchStation) {
-        let distanceStr = exactMatchRoadInfo ? ` (approx. ${exactMatchRoadInfo.distanceKm} KM, ${exactMatchRoadInfo.durationMins} mins away by road)` : "";
+        const distanceStr = exactMatchRoadInfo ? ` (approx. ${exactMatchRoadInfo.distanceKm} KM, ${exactMatchRoadInfo.durationMins} mins away by road)` : "";
         return JSON.stringify({
           text: `Found a great match! ${exactMatchStation.name}${distanceStr} in ${exactMatchStation.address.city} is AVAILABLE from ${startTime} to ${endTime}.\nWould you like me to book it for you?`,
           stations: stationsData,
@@ -306,29 +383,12 @@ const createFindBestStationTool = (userInfo, userLocation) => tool(
         });
       }
 
-      if (validStations.length === 0) {
-        return JSON.stringify({ 
-          error: `I couldn't find any nearby stations that are open and support ${chargerType} connectors.`,
-          stations: stationsData,
-          foundAvailable: false
-        });
-      }
-
       let altMatch = null;
       const reqStartMins = timeToMinutes(startTime);
-      const duration = timeToMinutes(endTime) - reqStartMins;
+      const duration = timeToMinutes(effectiveEndTime) - reqStartMins;
 
-      for (const st of validStations) {
-        const bookings = await Booking.find({
-          station: st._id,
-          date: queryDate,
-          connectorType: chargerType,
-          $or: [
-            { status: { $in: ['confirmed', 'in-progress'] } },
-            { status: 'pending', createdAt: { $gt: new Date(Date.now() - 10 * 60 * 1000) } }
-          ],
-        });
-
+      for (const st of stations) {
+        const bookings = stationBookings.get(st._id.toString()) || [];
         const pricingConfig = st.pricing.find(p => p.connectorType === chargerType);
         const maxPorts = pricingConfig?.portCount || st.availablePorts;
 
@@ -347,16 +407,16 @@ const createFindBestStationTool = (userInfo, userLocation) => tool(
           }
 
           if (altOverlapping < maxPorts) {
-            const roadInfo = await getRoadDistance(coords, st.location.coordinates);
+            const roadInfo = await getCachedRoadInfo(st);
             altMatch = { st, altStart, altEnd, roadInfo };
             break;
           }
         }
-        if (altMatch) break; 
+        if (altMatch) break;
       }
 
       if (altMatch) {
-        let distanceStr = altMatch.roadInfo ? ` (approx. ${altMatch.roadInfo.distanceKm} KM, ${altMatch.roadInfo.durationMins} mins away)` : "";
+        const distanceStr = altMatch.roadInfo ? ` (approx. ${altMatch.roadInfo.distanceKm} KM, ${altMatch.roadInfo.durationMins} mins away)` : "";
         return JSON.stringify({
           text: `The requested time slot is fully booked at nearby stations. However, ${altMatch.st.name}${distanceStr} is AVAILABLE later from ${altMatch.altStart} to ${altMatch.altEnd}.\nWould you like to book this alternative slot instead?`,
           stations: stationsData,
@@ -379,9 +439,9 @@ const createFindBestStationTool = (userInfo, userLocation) => tool(
     description: "Searches for EV charging stations and rigorously checks port availability against active bookings.",
     schema: z.object({
       location: z.string().optional().describe("The city, area, or address to search near. If not provided, it will automatically search near your current location or past booking location."),
-      date: z.string().describe("The exact date for the booking (e.g., '2024-05-02')"),
+      date: z.string().optional().describe("The exact date for the booking (e.g., '2024-05-02'). If omitted, today is assumed."),
       startTime: z.string().describe("The start time in 24-hour HH:MM format (e.g., '10:00')"),
-      endTime: z.string().describe("The end time in 24-hour HH:MM format (e.g., '12:00')"),
+      endTime: z.string().optional().describe("The end time in 24-hour HH:MM format (e.g., '12:00'). If omitted, the booking defaults to 1 hour."),
       chargerType: z.string().describe("The type of EV connector, e.g., 'CCS2', 'Type2', 'CHAdeMO'"),
     })
   }
@@ -393,7 +453,9 @@ const createBookingTool = (userInfo) => tool(
       const station = await Station.findById(stationId);
       if (!station) return JSON.stringify({ error: "Station not found." });
 
-      let bookingDate = new Date(date);
+      const requestedEndTime = endTime && endTime.trim() ? endTime : minutesToTime(timeToMinutes(startTime) + 60);
+
+      let bookingDate = date ? new Date(date) : new Date();
       if (isNaN(bookingDate.valueOf())) {
         bookingDate = new Date(); 
       }
@@ -419,8 +481,12 @@ const createBookingTool = (userInfo) => tool(
       }
 
       const requestedStart = timeToMinutes(startTime);
-      const requestedEnd = timeToMinutes(endTime);
+      const requestedEnd = timeToMinutes(requestedEndTime);
       const durationMinutes = requestedEnd - requestedStart;
+
+      if (requestedEnd >= 24 * 60) {
+        return JSON.stringify({ error: "Booking duration cannot cross midnight. Please choose an earlier start time." });
+      }
 
       if (durationMinutes < 60) {
         return JSON.stringify({ error: "Booking duration cannot be less than 1 hour." });
@@ -440,7 +506,7 @@ const createBookingTool = (userInfo) => tool(
       const pricingConfig = station.pricing.find(p => p.connectorType === chargerType);
       const maxPorts = pricingConfig?.portCount || station.availablePorts;
 
-      const availabilityResult = await checkAvailability(stationId, bookingDate, chargerType, startTime, endTime, maxPorts);
+      const availabilityResult = await checkAvailability(stationId, bookingDate, connectorType, startTime, requestedEndTime, maxPorts);
       
       if (!availabilityResult.available) {
         return JSON.stringify({ error: "Conflict detected: This slot is no longer available. Please try another time." });
@@ -462,7 +528,7 @@ const createBookingTool = (userInfo) => tool(
         connectorType: chargerType,
         date: bookingDate,
         startTime,
-        endTime,
+        endTime: requestedEndTime,
         durationMinutes,
         estimatedKWh,
         totalCost,
@@ -486,9 +552,9 @@ const createBookingTool = (userInfo) => tool(
     description: "Creates a formal booking in the system after the user confirms a specific slot and station.",
     schema: z.object({
       stationId: z.string().describe("The ID of the station to book"),
-      date: z.string().describe("The date of booking"),
+      date: z.string().optional().describe("The date of booking. If omitted, today is assumed."),
       startTime: z.string().describe("Start time HH:MM"),
-      endTime: z.string().describe("End time HH:MM"),
+      endTime: z.string().optional().describe("End time HH:MM. If omitted, defaults to 1 hour after start time."),
       chargerType: z.string().describe("The connector type"),
     })
   }
@@ -499,7 +565,7 @@ const getSystemPrompt = async (userId, location = null) => {
   const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   const timeStr = now.toLocaleTimeString('en-US');
   
-  const user = await User.findById(userId);
+  const user = await User.findById(userId, 'name savedVehicles vehicle vehicleNumbers').lean();
   let profileInfo = "";
   if (user) {
     profileInfo = `\nUser Profile Info:\n- Name: ${user.name}\n`;
@@ -553,19 +619,13 @@ Important:
 };
 
 function createVoiceAgent(userInfo, systemPrompt, userLocation = null) {
-  const llm = new ChatGroq({
-    model: "openai/gpt-oss-20b",
-    temperature: 0.1,
-    apiKey: GROQ_API_KEY,
-  });
-
   const tools = [
     createFindBestStationTool(userInfo, userLocation),
     createBookingTool(userInfo)
   ];
 
   const agent = createReactAgent({
-    llm,
+    llm: getGroqLlM(),
     tools,
     checkpointSaver: memory,
     messageModifier: systemPrompt,
@@ -576,9 +636,12 @@ function createVoiceAgent(userInfo, systemPrompt, userLocation = null) {
 
 async function processVoiceChat(message, threadId, userInfo, location = null) {
   try {
-    const history = await MessageModel.find({ threadId }).sort({ createdAt: 1 });
+    const history = await MessageModel.find({ threadId })
+      .sort({ createdAt: -1 })
+      .limit(30)
+      .lean();
     const systemMessage = await getSystemPrompt(userInfo.userId, location);
-    const formattedHistory = history.map(msg => {
+    const formattedHistory = history.reverse().map(msg => {
       if (msg.role === 'user') return new HumanMessage(msg.content);
       return new AIMessage(msg.content);
     });

@@ -7,7 +7,7 @@ import { StationsMap } from "@/components/StationsMap";
 import { Search, Zap, Loader2, LocateFixed, Plug, X, ChevronRight, MapPin } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChargingStation } from "@fortawesome/free-solid-svg-icons";
-import { getApiError } from "@/lib/utils";
+import { getApiError, isStationOpenNow } from "@/lib/utils";
 import { toast } from "sonner";
 import { LandingPage } from "@/components/LandingPage";
 import { Drawer } from "vaul";
@@ -515,7 +515,8 @@ function HomePage() {
                 </div>
               ) : (
                 filtered.slice(0, 8).map((s) => {
-                  const avail = s.isOpen && s.availablePorts > 0;
+                  const isOpenNow = isStationOpenNow(s);
+                  const avail = isOpenNow && s.availablePorts > 0;
                   // ─── UPDATE 4: Prioritize road distance, fall back to haversine ──
                   const distInfo = getDistanceInfo(s._id, s.distanceKm);
 
@@ -643,7 +644,7 @@ function HomePage() {
                             color: avail ? "#C64F38" : "#4A6163",
                           }}
                         >
-                          {avail ? `${s.availablePorts} free` : s.isOpen ? "Full" : "Closed"}
+                          {avail ? `${s.availablePorts} free` : isOpenNow ? "Full" : "Closed"}
                         </span>
                       </div>
                       <ChevronRight size={14} color="#C7C6CA" />
@@ -872,7 +873,8 @@ function MobileCard({
   // ─── UPDATE 4: New prop for road distance ──────────────────────────────────
   roadDistanceKm?: number;
 }) {
-  const avail = station.isOpen && station.availablePorts > 0;
+  const isOpenNow = isStationOpenNow(station);
+  const avail = isOpenNow && station.availablePorts > 0;
   const minPrice = station.pricing?.length
     ? Math.min(...station.pricing.map((p) => p.priceperKWh))
     : 0;
@@ -945,7 +947,7 @@ function MobileCard({
             width: 8,
             height: 8,
             borderRadius: "50%",
-            background: avail ? "#C64F38" : station.isOpen ? "#4A6163" : "#C7C6CA",
+            background: avail ? "#C64F38" : isOpenNow ? "#4A6163" : "#C7C6CA",
             border: "1.5px solid #ffffff",
           }}
         />
@@ -1002,7 +1004,7 @@ function MobileCard({
             }}
           >
             {avail && <span className="h-1.5 w-1.5 rounded-full bg-[#C64F38] animate-pulse" />}
-            {avail ? `${station.availablePorts} free` : station.isOpen ? "Full" : "Closed"}
+            {avail ? `${station.availablePorts} free` : isOpenNow ? "Full" : "Closed"}
           </span>
 
           {/* ─── UPDATE 4: Green badge = road, Gray badge = map distance ────── */}

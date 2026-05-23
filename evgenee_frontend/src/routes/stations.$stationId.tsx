@@ -33,7 +33,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { toast } from "sonner";
-import { cn, formatCurrency, getApiError } from "@/lib/utils";
+import { cn, formatCurrency, getApiError, isStationOpenNow } from "@/lib/utils";
 import { format } from "date-fns";
 import { useAuth } from "@/lib/auth";
 
@@ -501,6 +501,7 @@ function StationDetail() {
     ? Math.min(...station.pricing.map((p) => p.priceperKWh))
     : 0;
   const [lng, lat] = station.location.coordinates;
+  const isOpenNow = isStationOpenNow(station);
 
   const isMyStation =
     station &&
@@ -543,11 +544,11 @@ function StationDetail() {
           <div className="flex items-center gap-2.5 mb-2.5">
             <span className={cn(
               "text-[10px] font-bold px-2.5 py-0.5 rounded-[4px] border uppercase font-space tracking-wider",
-              station.isOpen 
+              isOpenNow 
                 ? "bg-[#E2F3EC] text-[#0F9F59] border-[#CDECE0]" 
                 : "bg-[#EAEAEA] text-[#4A6163] border-[#D1D1D1]"
             )}>
-              {station.isOpen ? "Open Now" : "Currently Closed"}
+              {isOpenNow ? "Open Now" : "Currently Closed"}
             </span>
             <span className="text-[10px] font-bold tracking-wider bg-[#242426]/60 text-white px-2 py-0.5 rounded-[4px] backdrop-blur-sm uppercase font-space">
               {station.openingHours || "24/7 Service"}

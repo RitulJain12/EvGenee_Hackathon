@@ -1,7 +1,7 @@
 import { io, Socket } from "socket.io-client";
 import { API_BASE_URL, tokenStore } from "./api";
 
-let socketUrl = "http://localhost:5000";
+let socketUrl = "https://evgenee-hackathon.onrender.com";
 try {
   const url = new URL(API_BASE_URL);
   socketUrl = url.origin;

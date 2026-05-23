@@ -1,6 +1,42 @@
   const Station = require('../models/station.model');
 const axios = require('axios');
 
+function getIstTimeMinutes() {
+  const now = new Date();
+  const istString = now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata', hour12: false });
+  const parts = istString.split(',').pop()?.trim().split(':') ?? [];
+  const hours = Number(parts[0] ?? 0);
+  const minutes = Number(parts[1] ?? 0);
+  return hours * 60 + minutes;
+}
+
+function parseOpeningHours(openingHours) {
+  if (!openingHours || typeof openingHours !== 'string') return null;
+  const match = openingHours.match(/(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})/);
+  if (!match) return null;
+  const [_, start, end] = match;
+  const [startH, startM] = start.split(':').map(Number);
+  const [endH, endM] = end.split(':').map(Number);
+  return { start: startH * 60 + startM, end: endH * 60 + endM };
+}
+
+function isOpenBySchedule(openingHours) {
+  const range = parseOpeningHours(openingHours);
+  if (!range) return true;
+  const current = getIstTimeMinutes();
+  if (range.start === range.end) return true;
+  if (range.start < range.end) {
+    return current >= range.start && current < range.end;
+  }
+  return current >= range.start || current < range.end;
+}
+
+function getDynamicOpenStatus(station) {
+  if (!station) return false;
+  if (station.isOpen === false) return false;
+  return isOpenBySchedule(station.openingHours);
+}
+
 async function getRoadDistance(startCoords, endCoords) {
   try {
     const url = `http://router.project-osrm.org/route/v1/driving/${startCoords[0]},${startCoords[1]};${endCoords[0]},${endCoords[1]}?overview=false`;
@@ -61,11 +97,11 @@ const getNearbyStations = async (req, res, next) => {
     }
 
     
+    // Keep active stations only; compute opening status dynamically based on hours.
     pipeline.push({
-      $match: { status: 'active', isOpen: true },
+      $match: { status: 'active' },
     });
 
-    
     pipeline.push({
       $addFields: {
         distanceKm: { $round: [{ $divide: ['$distance', 1000] }, 2] },
@@ -82,13 +118,17 @@ const getNearbyStations = async (req, res, next) => {
       const roadInfo = await getRoadDistance([parseFloat(lng), parseFloat(lat)], st.location.coordinates);
       return {
         ...st,
+        isOpen: getDynamicOpenStatus(st),
         roadDistance: roadInfo ? roadInfo.roadDistance : null,
         travelTime: roadInfo ? roadInfo.travelTime : null
       };
     }));
 
   
-    const remainingStations = stations.slice(10);
+    const remainingStations = stations.slice(10).map((st) => ({
+      ...st,
+      isOpen: getDynamicOpenStatus(st),
+    }));
     const finalData = [...enrichedStations, ...remainingStations];
 
     res.json({
@@ -115,9 +155,12 @@ const getStationById = async (req, res, next) => {
       });
     }
 
+    const stationData = station.toObject();
+    stationData.isOpen = getDynamicOpenStatus(stationData);
+
     res.json({
       success: true,
-      data: station,
+      data: stationData,
     });
   } catch (error) {
     next(error);
@@ -249,10 +292,16 @@ const addReview = async (req, res, next) => {
 const getMyStations = async (req, res, next) => {
   try {
     const stations = await Station.find({ ownerofStation: req.user.id });
+    const data = stations.map((station) => {
+      const stationObj = station.toObject();
+      stationObj.isOpen = getDynamicOpenStatus(stationObj);
+      return stationObj;
+    });
+
     res.json({
       success: true,
-      count: stations.length,
-      data: stations,
+      count: data.length,
+      data,
     });
   } catch (error) {
     next(error);
@@ -276,15 +325,20 @@ const getAllStations = async (req, res, next) => {
       .sort({ createdAt: -1 });
 
     const total = await Station.countDocuments(query);
+    const data = stations.map((station) => {
+      const stationObj = station.toObject();
+      stationObj.isOpen = getDynamicOpenStatus(stationObj);
+      return stationObj;
+    });
 
     res.json({
       success: true,
-      count: stations.length,
+      count: data.length,
       total,
       page: parseInt(page),
       limit: parseInt(limit),
       pages: Math.ceil(total / limit),
-      data: stations,
+      data,
     });
   } catch (error) {
     next(error);
