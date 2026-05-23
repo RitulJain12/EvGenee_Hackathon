@@ -213,7 +213,7 @@ const isOverlapping = (startA, endA, startB, endB) => {
 };
 
 const createFindBestStationTool = (userInfo, userLocation) => tool(
-  async ({ location, date, startTime, endTime, chargerType }) => {
+  async ({ location, date, startTime, endTime, connectorType }) => {
     try {
       let coords = null;
       let locationName = location || "";
@@ -271,7 +271,7 @@ const createFindBestStationTool = (userInfo, userLocation) => tool(
             $maxDistance: 4000000
           }
         },
-        typeOfConnectors: chargerType,
+        typeOfConnectors: connectorType,
         isOpen: true
       };
 
@@ -331,7 +331,7 @@ const createFindBestStationTool = (userInfo, userLocation) => tool(
         const bookings = await Booking.find({
           station: st._id,
           date: queryDate,
-          connectorType: chargerType,
+          connectorType: connectorType,
           $or: [
             { status: { $in: ['confirmed', 'in-progress'] } },
             { status: 'pending', createdAt: { $gt: new Date(Date.now() - 10 * 60 * 1000) } }
@@ -339,9 +339,9 @@ const createFindBestStationTool = (userInfo, userLocation) => tool(
         }).lean();
         stationBookings.set(st._id.toString(), bookings);
 
-        const pricingConfig = st.pricing.find(p => p.connectorType === chargerType);
+        const pricingConfig = st.pricing.find(p => p.connectorType === connectorType);
         const maxPorts = pricingConfig?.portCount || st.availablePorts;
-        const availabilityResult = await checkAvailability(st._id, queryDate, chargerType, startTime, effectiveEndTime, maxPorts, bookings);
+        const availabilityResult = await checkAvailability(st._id, queryDate, connectorType, startTime, effectiveEndTime, maxPorts, bookings);
 
         if (availabilityResult.available) {
           exactMatchStation = st;
@@ -349,7 +349,7 @@ const createFindBestStationTool = (userInfo, userLocation) => tool(
           break;
         }
 
-        const nextSlot = await findNextAvailableSlot(st._id, queryDate, chargerType, startTime, requestedDuration, maxPorts, st.openingHours, bookings);
+        const nextSlot = await findNextAvailableSlot(st._id, queryDate, connectorType, startTime, requestedDuration, maxPorts, st.openingHours, bookings);
         if (nextSlot) {
           st.nextAvailableSlot = nextSlot;
         }
@@ -389,7 +389,7 @@ const createFindBestStationTool = (userInfo, userLocation) => tool(
 
       for (const st of stations) {
         const bookings = stationBookings.get(st._id.toString()) || [];
-        const pricingConfig = st.pricing.find(p => p.connectorType === chargerType);
+        const pricingConfig = st.pricing.find(p => p.connectorType === connectorType);
         const maxPorts = pricingConfig?.portCount || st.availablePorts;
 
         for (let offset = 60; offset <= 240; offset += 60) {
@@ -425,7 +425,7 @@ const createFindBestStationTool = (userInfo, userLocation) => tool(
       }
 
       return JSON.stringify({
-        error: `Sorry, all nearby stations are fully booked for ${chargerType} connectors around that time.`,
+        error: `Sorry, all nearby stations are fully booked for ${connectorType} connectors around that time.`,
         stations: stationsData,
         foundAvailable: false
       });
@@ -442,33 +442,38 @@ const createFindBestStationTool = (userInfo, userLocation) => tool(
       date: z.string().optional().describe("The exact date for the booking (e.g., '2024-05-02'). If omitted, today is assumed."),
       startTime: z.string().describe("The start time in 24-hour HH:MM format (e.g., '10:00')"),
       endTime: z.string().optional().describe("The end time in 24-hour HH:MM format (e.g., '12:00'). If omitted, the booking defaults to 1 hour."),
-      chargerType: z.string().describe("The type of EV connector, e.g., 'CCS2', 'Type2', 'CHAdeMO'"),
+      connectorType: z.string().describe("The type of EV connector, e.g., 'CCS2', 'Type2', 'CHAdeMO'"),
     })
   }
 );
 
 const createBookingTool = (userInfo) => tool(
-  async ({ stationId, date, startTime, endTime, chargerType }) => {
+  async ({ stationId, date, startTime, endTime, connectorType }) => {
     try {
-      const station = await Station.findById(stationId);
+      const station = await Station.findById(stationId).lean();
       if (!station) return JSON.stringify({ error: "Station not found." });
 
       const requestedEndTime = endTime && endTime.trim() ? endTime : minutesToTime(timeToMinutes(startTime) + 60);
 
-      let bookingDate = date ? new Date(date) : new Date();
-      if (isNaN(bookingDate.valueOf())) {
-        bookingDate = new Date(); 
-      }
-      bookingDate.setHours(0, 0, 0, 0);
-
+      // Get current date/time in Indian Standard Time (IST = UTC + 5:30)
       const now = new Date();
-      const indianTimeStr = now.toLocaleString("en-US", { timeZone: "Asia/Kolkata", hour12: false });
-      const [datePart, timePart] = indianTimeStr.split(', ');
-      const [currH, currM] = timePart.split(':').map(Number);
+      const istOffset = 5.5 * 60 * 60 * 1000;
+      const istTime = new Date(now.getTime() + istOffset);
+      const currH = istTime.getUTCHours();
+      const currM = istTime.getUTCMinutes();
       const currentMinutes = currH * 60 + currM;
 
-      const today = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
-      today.setHours(0, 0, 0, 0);
+      const todayISTStr = `${istTime.getUTCFullYear()}-${String(istTime.getUTCMonth() + 1).padStart(2, '0')}-${String(istTime.getUTCDate()).padStart(2, '0')}`;
+      const targetDateStr = date ? date : todayISTStr;
+
+      let bookingDate = new Date(targetDateStr);
+      if (isNaN(bookingDate.valueOf())) {
+        bookingDate = new Date(todayISTStr);
+      }
+      // Set strictly to UTC midnight to keep queries consistent regardless of server timezone shifts
+      bookingDate = new Date(Date.UTC(bookingDate.getUTCFullYear(), bookingDate.getUTCMonth(), bookingDate.getUTCDate()));
+
+      const today = new Date(Date.UTC(istTime.getUTCFullYear(), istTime.getUTCMonth(), istTime.getUTCDate()));
 
       if (bookingDate < today) {
         return JSON.stringify({ error: "Cannot book for a past date." });
@@ -492,28 +497,10 @@ const createBookingTool = (userInfo) => tool(
         return JSON.stringify({ error: "Booking duration cannot be less than 1 hour." });
       }
 
-      
-      const existingBookings = await Booking.find({
-        station: stationId,
-        date: bookingDate,
-        connectorType: chargerType,
-        $or: [
-          { status: { $in: ['confirmed', 'in-progress'] } },
-          { status: 'pending', createdAt: { $gt: new Date(Date.now() - 10 * 60 * 1000) } }
-        ],
-      });
-      
-      const pricingConfig = station.pricing.find(p => p.connectorType === chargerType);
+      const pricingConfig = station.pricing.find(p => p.connectorType === connectorType);
       const maxPorts = pricingConfig?.portCount || station.availablePorts;
 
-      const availabilityResult = await checkAvailability(stationId, bookingDate, connectorType, startTime, requestedEndTime, maxPorts);
-      
-      if (!availabilityResult.available) {
-        return JSON.stringify({ error: "Conflict detected: This slot is no longer available. Please try another time." });
-      }
-
-      const pricing = station.pricing.find((p) => p.connectorType === chargerType);
-      const pricePerKWh = pricing ? pricing.priceperKWh : 0;
+      const pricePerKWh = pricingConfig ? pricingConfig.priceperKWh : 0;
       const durationHours = durationMinutes / 60;
       const estimatedKWh = parseFloat((station.chargingSpeed * durationHours).toFixed(2));
       const totalCost = parseFloat((estimatedKWh * pricePerKWh).toFixed(2));
@@ -522,10 +509,11 @@ const createBookingTool = (userInfo) => tool(
       const platformFee = parseFloat(((totalCost * platformFeePercentage) / 100).toFixed(2));
       const grandTotal = parseFloat((totalCost + platformFee).toFixed(2));
 
+      // Create the booking document atomically first (Optimistic Concurrency Control path)
       const booking = await Booking.create({
         user: userInfo.userId,
         station: stationId,
-        connectorType: chargerType,
+        connectorType: connectorType,
         date: bookingDate,
         startTime,
         endTime: requestedEndTime,
@@ -536,6 +524,42 @@ const createBookingTool = (userInfo) => tool(
         grandTotal,
         status: 'pending',
       });
+
+      // Query all overlapping bookings for this station slot, ordered by ID ascending
+      const existingBookings = await Booking.find({
+        station: stationId,
+        date: bookingDate,
+        connectorType: connectorType,
+        $or: [
+          { status: { $in: ['confirmed', 'in-progress'] } },
+          { status: 'pending', createdAt: { $gt: new Date(Date.now() - 10 * 60 * 1000) } }
+        ],
+      }).sort({ _id: 1 }).lean();
+
+      // Check slot availability considering only bookings created PRIOR to this booking
+      const priorBookings = [];
+      for (const b of existingBookings) {
+        if (b._id.toString() === booking._id.toString()) {
+          break;
+        }
+        priorBookings.push(b);
+      }
+
+      const availabilityResult = await checkAvailability(
+        stationId,
+        bookingDate,
+        connectorType,
+        startTime,
+        requestedEndTime,
+        maxPorts,
+        priorBookings
+      );
+
+      if (!availabilityResult.available) {
+        // Roll back the created booking due to a concurrency conflict
+        await Booking.deleteOne({ _id: booking._id });
+        return JSON.stringify({ error: "Conflict detected: This slot is no longer available. Please try another time." });
+      }
 
       return JSON.stringify({
         success: true,
@@ -555,7 +579,7 @@ const createBookingTool = (userInfo) => tool(
       date: z.string().optional().describe("The date of booking. If omitted, today is assumed."),
       startTime: z.string().describe("Start time HH:MM"),
       endTime: z.string().optional().describe("End time HH:MM. If omitted, defaults to 1 hour after start time."),
-      chargerType: z.string().describe("The connector type"),
+      connectorType: z.string().describe("The connector type"),
     })
   }
 );
